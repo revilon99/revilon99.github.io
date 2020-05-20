@@ -1,7 +1,5 @@
 # Oli Cass's Website 
 https://revilon99.github.io  
- Oliver Cass (c) 2020  
- All Rights Reserved
 
  A collection of all my html5 projects
 
