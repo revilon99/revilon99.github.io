@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>boredom.io</title>
+        <title>Pong</title>
         <style>
             body{
                 margin: 0;
@@ -16,13 +16,24 @@
             }
         </style>
 
-        <meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1; user-scalable=0;"/>
-    <meta name="mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+        <meta name="mobile-web-app-capable" content="yes">
+        <link rel="apple-touch-icon" sizes="180x180" href="/pong/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/pong/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/pong/favicon/favicon-16x16.png">
+        <link rel="manifest" href="/pong/favicon/site.webmanifest">
+        <link rel="mask-icon" href="/pong/favicon/safari-pinned-tab.svg" color="#5bbad5">
+        <link rel="shortcut icon" href="/pong/favicon/favicon.ico">
+        <meta name="msapplication-TileColor" content="#000000">
+        <meta name="msapplication-config" content="/pong/favicon/browserconfig.xml">
+        <meta name="theme-color" content="#000000">
+        <meta name="description" content="Bouncing Balls"
     </head>
     <body>
         <canvas id="game"></canvas>
         
         <script src="canvas.js"></script>
+        <script src="collision.js"></script>
         <script src="balls.js"></script>
     </body>
 </html>
