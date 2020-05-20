@@ -24,15 +24,13 @@ function init_canvas(){
       // don't have to worry about the difference.
       ctx.scale(dpr, dpr);
 
-    MIN_RADIUS = Math.floor(canvas.width/40);
+    MIN_RADIUS = Math.floor(canvas.width/80);
     MAX_RADIUS = Math.floor(canvas.width/20);
     MAX_SPEED = Math.floor(canvas.width/150);
 }
 
 window.onload = function(){
     init_canvas();
-
-    if(window.innerWidth < 450) canvas.addEventListener('click', fullscreen);
 
     requestAnimationFrame(tick);
 }
@@ -50,13 +48,4 @@ function getMousePos(canvas, evt) {
 		x: ((evt.clientX||evt.touches[0].clientX) - rect.left),   // scale mouse coordinates after they have
 		y: ((evt.clientY||evt.touches[0].clientY)  - rect.top)     // been adjusted to be relative to element
 	}
-}
-
-function fullscreen(){
-   if(canvas.webkitRequestFullScreen) {
-       canvas.webkitRequestFullScreen();
-   }
-  else {
-     canvas.mozRequestFullScreen();
-  }            
 }
