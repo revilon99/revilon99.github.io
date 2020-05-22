@@ -431,6 +431,7 @@ window.onresize = function(){
     if(document.getElementById('darken').style.display == "none") flash = true;
     if(flash) document.getElementById('darken').style.display = "initial";
     init_canvas();
+	calculate();
     if(flash) document.getElementById('darken').style.display = "none";
 }
 
