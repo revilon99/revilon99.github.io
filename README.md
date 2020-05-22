@@ -5,5 +5,5 @@ https://revilon99.github.io
 
 ## Pong
 https://revilon99.github.io/pong/  
-Nothing more than bouncing balls
+Nothing more than bouncing balls  
 Simple yet effective
