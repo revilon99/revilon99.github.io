@@ -3,28 +3,10 @@ boidsVR.js
 Oliver Cass (c) 2020
 All Rights Reserved
 */
-var target = null;
 
 var scene;
-
-var params = {
-	numBoids: 600,
-	
-	maxSpeed: 0.3,
-	maxForce: 0.004,
-	
-	sepFac: 15,
-	aliFac: 1.5,
-	cohFac: 0.3,
-	tarFac: 1.3,
-	bouFac: 1,
-	
-	areaRad: 50,
-	
-	sepRad: 2.3,
-	aliRad: 3.5,
-	cohRad: 4.2
-}
+var params = {}
+var up = new THREE.Vector3(1, 0, 0);
 
 function calculate(){
 	params.sepRadSq = params.sepRad * params.sepRad;
@@ -35,6 +17,29 @@ function calculate(){
 	params.searchRadSq = params.searchRad * params.searchRad;
 	
 	params.areaRadSq = params.areaRad * params.areaRad;
+	
+	if(boids.length > 0 && params.numBoids > 0){
+		if(params.numBoids > boids.length){
+			for(var i = 0; i < params.numBoids - boids.length; i++){
+				var newBoid = document.createElement('a-cone');
+				newBoid.setAttribute('radius-bottom', '0.4');
+				newBoid.setAttribute('radius-top', '0');
+				newBoid.setAttribute('height', '0.9');
+				newBoid.setAttribute('color', randomColour());
+				newBoid.setAttribute('boid', '');
+				newBoid.object3D.position.set(Math.random()*params.areaRad*2 - params.areaRad, 2 + Math.random()*params.areaRad, Math.random()*params.areaRad*2 - params.areaRad);
+				newBoid.object3D.up = up;
+				scene.appendChild(newBoid);
+			}
+		}else if(params.numBoids < boids.length){
+			for(var i = params.numBoids - 1; i < boids.length; i++){
+				try{
+					boids[i].el.parentNode.removeChild(boids[i].el);
+				}catch(e){}
+			}
+			boids.splice(params.numBoids - 1, boids.length - params.numBoids);
+		}
+	}
 }
 
 var boids = [];
@@ -48,26 +53,23 @@ AFRAME.registerComponent('boid', {
 	},
 	
 	tick: function(time, timeDelta){
+		if(!running) return;
 		var localBoids = getLocalBoids(this);
 		
 		var rule1 = seperation(this, localBoids);
 		var rule2 = alignment(this, localBoids);
 		var rule3 = cohesion(this, localBoids);
-		var rule4 = new THREE.Vector3();
-		if(target) rule4 = seek(this, new THREE.Vector3());
-		var rule5 = boundary(this, this.el.object3D.position);
+		var rule4 = boundary(this, this.el.object3D.position);
 		
 		rule1.multiplyScalar(params.sepFac);
 		rule2.multiplyScalar(params.aliFac);
 		rule3.multiplyScalar(params.cohFac);
-		rule4.multiplyScalar(params.tarFac);
-		rule5.multiplyScalar(params.bouFac);
+		rule4.multiplyScalar(params.bouFac);
 		
 		this.acc.add(rule1);
 		this.acc.add(rule2);
 		this.acc.add(rule3);
 		this.acc.add(rule4);
-		this.acc.add(rule5);
 		
 		this.vel.add(this.acc);
 		this.vel.clampScalar(-params.maxSpeed, params.maxSpeed);
@@ -85,10 +87,26 @@ AFRAME.registerComponent('boid', {
 });
 
 window.onload = function(){
+	document.getElementById('playpause').addEventListener('click', function(e){
+		running = !running;
+		if(running) {
+			e.target.classList.remove('paused');
+			document.getElementById('darken').style.display = "none";
+		}else{
+			e.target.classList.add('paused');
+			document.getElementById('darken').style.display = "initial";
+		}
+	}, false);
+	
+	var inputs = document.getElementsByClassName('slider');
+    for(var i of inputs){
+        if(document.getElementById(i.id + "_a")) document.getElementById(i.id + "_a").innerHTML = i.value / (i.getAttribute('scale')||1);
+        i.addEventListener('input', slider, false);
+        params[i.id] = i.value / (i.getAttribute('scale')||1);
+    }
+	
 	scene = document.getElementById('scene');
 	calculate();
-	
-	var up = new THREE.Vector3(1, 0, 0);
 
 	for(var i = 0; i < params.numBoids; i++){
 		var newBoid = document.createElement('a-cone');
@@ -101,6 +119,16 @@ window.onload = function(){
 		newBoid.object3D.up = up;
 		scene.appendChild(newBoid);
 	}
+	
+	running = true;
+}
+
+var running = false;
+
+function slider(e){
+    if(document.getElementById(e.target.id + "_a")) document.getElementById(e.target.id + "_a").innerHTML = e.target.value / (e.target.getAttribute('scale')||1);
+    params[e.target.id] = e.target.value / (e.target.getAttribute('scale')||1);
+    calculate();
 }
 
 function getLocalBoids(boid){
@@ -164,7 +192,7 @@ function cohesion(boid, boids){
   var count = 0;
   for(var b of boids){
     var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
-    if(dist < params.cohRadSq && dist > 5){ //BAD
+    if(dist < params.cohRadSq && dist > 10){ //BAD
       target.add(b.el.object3D.position);
       count++;
     }

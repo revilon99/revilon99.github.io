@@ -332,7 +332,7 @@ function calculate(){
         if(params.numBoids > boids.length){
             for(var i = 0; i < params.numBoids - boids.length; i++) boids.push(new Boid());
         }else if(params.numBoids < boids.length){
-            boids.splice(params.numBoids - 1, boids.length - params.numBoids)
+            boids.splice(params.numBoids - 1, boids.length - params.numBoids);
         }
     }
 

@@ -1,0 +1,109 @@
+/*
+boidsVR/styles.css
+Oliver Cass (c) 2020
+All Rights Reserved
+*/
+
+body{
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+div#darken{
+  position: absolute;
+  display: inline-block;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100vh;
+  background-color: #000000bd;
+  overflow-y: auto;
+  padding: 10vh 10vw;
+}
+
+div#darken::-webkit-scrollbar{
+  display: none;
+}
+
+#playpause {
+  position: absolute;
+  right: 1vh;
+  top: 1vh;
+  background: transparent;
+  box-sizing: border-box;
+  width: 0;
+  height: 8vh;
+  border-color: transparent transparent transparent #ffffff;
+  transition: 100ms all ease;
+  cursor: pointer;
+  border-style: double;
+  border-width: 0px 0 0px 7vh;
+}
+#playpause.paused {
+  border-style: solid;
+  border-width: 4vh 0 4vh 6vh;
+}
+
+h1, h2, h3, a{
+  font-family: 'Arial';
+  color: white;
+  margin: 0;
+}
+h1{
+  margin: 2vh 0 1vh;
+}
+h2{
+  padding-left: 1vh;
+}
+h3{
+  padding-left: 2vh;
+}
+a{
+  display: inline-block;
+  color: white;
+  font-size: 30px;
+}
+
+.slider {
+  display: inline-block;
+  -webkit-appearance: none;
+  width: 55vw;
+  margin: 10px 10px 0 0;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider#vis{
+  width: 70vw;
+}
+
+div#end{
+	width: 100%;
+	height: 30vh;
+}
