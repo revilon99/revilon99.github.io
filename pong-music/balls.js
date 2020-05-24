@@ -4,6 +4,8 @@ Oliver Cass (c) 2020
 All Rights Reserved
 */
 
+//https://stackoverflow.com/questions/44167012/html5-audio-to-play-a-playlist-of-local-mp3-files
+
 var balls = [];
 var MIN_RADIUS;
 var MAX_RADIUS;
@@ -53,7 +55,7 @@ var Ball = function(x, y){
     }
 
     this.setRadius = function(){
-        var newRadius = this.init_radius + DELTA_RAD*(smooth[Math.floor(this.colour*smooth.length)]/255);
+        var newRadius = this.init_radius - DELTA_RAD*(smooth[Math.floor(this.colour*smooth.length)]/255);
         this.velR = newRadius - this.radius;
     }
 
