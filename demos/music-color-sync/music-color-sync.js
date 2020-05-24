@@ -12,7 +12,7 @@ var ctx = canvas.getContext('2d');
 
 var MAX_RADIUS = 40;
 var MIN_RADIUS = 20;
-var DELTA_RAD  = 10; 
+var DELTA_RAD  = 30; 
 var NUM_BALLS  = 20;
 
 var balls = [];
