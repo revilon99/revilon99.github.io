@@ -10,10 +10,10 @@ var balls = [];
 var MIN_RADIUS = 40;
 var MAX_RADIUS = 80;
 
-var MAX_SPEED;
+var MAX_SPEED = 5;
 
 const DELTA_R = 0.01;
-const DELTA_RAD = 30;
+const DELTA_RAD = 65;
 
 var audioCtx, analyser, freqDataArray, smooth, source;
 
@@ -56,6 +56,7 @@ var Ball = function(x, y){
 
     this.setRadius = function(){
         var newRadius = this.init_radius - DELTA_RAD*(smooth[Math.floor(this.colour*smooth.length)]/255);
+		if(newRadius < 5) newRadius = 5;
         this.velR = newRadius - this.radius;
     }
 
