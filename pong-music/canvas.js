@@ -23,10 +23,6 @@ function init_canvas(){
       // Scale all drawing operations by the dpr, so you
       // don't have to worry about the difference.
       ctx.scale(dpr, dpr);
-
-    MIN_RADIUS = Math.floor(canvas.width/80);
-    MAX_RADIUS = Math.floor(canvas.width/20);
-    MAX_SPEED = Math.floor(canvas.width/200);
 }
 
 window.onload = function(){

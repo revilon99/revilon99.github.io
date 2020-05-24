@@ -7,13 +7,13 @@ All Rights Reserved
 //https://stackoverflow.com/questions/44167012/html5-audio-to-play-a-playlist-of-local-mp3-files
 
 var balls = [];
-var MIN_RADIUS;
-var MAX_RADIUS;
+var MIN_RADIUS = 40;
+var MAX_RADIUS = 80;
 
 var MAX_SPEED;
 
 const DELTA_R = 0.01;
-const DELTA_RAD = 50;
+const DELTA_RAD = 30;
 
 var audioCtx, analyser, freqDataArray, smooth, source;
 
