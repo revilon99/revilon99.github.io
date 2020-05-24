@@ -26,7 +26,7 @@ function init_canvas(){
 
     MIN_RADIUS = Math.floor(canvas.width/80);
     MAX_RADIUS = Math.floor(canvas.width/20);
-    MAX_SPEED = Math.floor(canvas.width/150);
+    MAX_SPEED = Math.floor(canvas.width/200);
 }
 
 window.onload = function(){
