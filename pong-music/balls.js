@@ -11,6 +11,9 @@ var MAX_RADIUS;
 var MAX_SPEED;
 
 const DELTA_R = 0.01;
+const DELTA_RAD = 50;
+
+var audioCtx, analyser, freqDataArray, smooth, source;
 
 var running = true;
 
@@ -21,7 +24,7 @@ var Ball = function(x, y){
     this.velX = 2 * Math.random() * MAX_SPEED - MAX_SPEED;
     this.velY = 2 * Math.random() * MAX_SPEED - MAX_SPEED;
 
-    this.colour = randomColour();
+    this.colour = Math.random();
 
     this.earliestCollisionResponse = new Collision();
 
@@ -30,20 +33,14 @@ var Ball = function(x, y){
     this.other = new Collision();
 
     this.ballIntersect = function(ball, timeLimit){
-        CollisionPhysics.pointIntersectsMovingPoint(
-        this.x, this.y, this.velX, this.velY, this.radius,
-        ball.x, ball.y, ball.velX, ball.velY, ball.radius,
-        timeLimit, this.me, this.other);
+        CollisionPhysics.pointIntersectsMovingPoint(this, ball, timeLimit, this.me, this.other);
 
         if(this.other.t < ball.earliestCollisionResponse.t) ball.earliestCollisionResponse.copy(this.other);
         if(this.me.t < this.earliestCollisionResponse.t) this.earliestCollisionResponse.copy(this.me)
     }
 
     this.borderIntersect = function(timeLimit){
-        CollisionPhysics.pointIntersectsRectangleOuter(
-            this.x, this.y, this.velX, this.velY, this.radius,
-            0, 0, canvas.clientWidth, canvas.clientHeight,
-            timeLimit, this.temp);
+        CollisionPhysics.pointIntersectsRectangleOuter(this, {x1: 0, x2: canvas.clientWidth, y1: 0, y2: canvas.clientHeight}, timeLimit, this.temp);
         if(this.temp.t < this.earliestCollisionResponse.t) this.earliestCollisionResponse.copy(this.temp);
     }
 
@@ -53,6 +50,11 @@ var Ball = function(x, y){
 
     this.ballCollision = function(ball){
         return ((this.x - ball.x)*(this.x - ball.x) + (this.y - ball.y)*(this.y - ball.y) < (this.radius + ball.radius)*(this.radius + ball.radius));
+    }
+
+    this.setRadius = function(){
+        var newRadius = this.init_radius + DELTA_RAD*(smooth[Math.floor(this.colour*smooth.length)]/255);
+        this.velR = newRadius - this.radius;
     }
 
     this.update = function(time){
@@ -69,13 +71,15 @@ var Ball = function(x, y){
             this.y += this.velY * time;
         }
 
+        this.radius += this.velR * time;
+
         this.earliestCollisionResponse.reset();
     }
 
     this.render = function(){
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-        ctx.fillStyle = this.colour;
+        ctx.fillStyle = colour(this.colour);
         ctx.fill();
         ctx.closePath();
     }
@@ -100,14 +104,25 @@ var Ball = function(x, y){
         this.radius -= DELTA_R;
         if(this.radius < MIN_RADIUS) delete_ball(this);
     }
+
+    this.init_radius = this.radius;
 }
 
-const EPSILON_TIME = 0.0001;
+const EPSILON_TIME = 0.00000001;
 
 function tick(){
     var timeLeft = 1;
 
-    if(running) {do{
+    analyser.getByteFrequencyData(freqDataArray);
+    smooth = rollingAverage(freqDataArray, 100);
+
+    if(running) {
+    for(var b of balls) {
+        if(b == null) continue;
+        b.setRadius();
+    }
+
+    do{
         var tMin = timeLeft;
 
         //Ball-Ball Collision
@@ -164,13 +179,10 @@ function render(){
         if(b == null) continue;
         b.render();
     }
-
-    if(balls.length){
-        
-    }
 }
 
 canvas.addEventListener('click', function(e){
+    if(!setup) init_music();
     var mouse = getMousePos(canvas, e);
     
     for(var b of balls) {
@@ -200,3 +212,58 @@ document.getElementById('playpause').addEventListener('click', function(e){
         document.getElementById('darken').style.display = "initial";
     }
 }, false);
+
+var setup = false;
+function init_music(){
+    setup = true;
+    try{
+        document.getElementById('audio').play();
+
+        audioCtx = new AudioContext();
+
+        var audio = document.getElementById('audio');
+        var input = audioCtx.createMediaElementSource(audio);
+
+        input.connect(audioCtx.destination);
+
+        analyser = audioCtx.createAnalyser();
+
+        input.connect(analyser);
+
+        freqDataArray = new Uint8Array(analyser.frequencyBinCount);
+    }catch(e){
+        setup = false;
+    }
+
+    requestAnimationFrame(tick);
+}
+
+function rollingAverage(data, n){
+    var smooth = [];
+    for(var i = 0; i < data.length; i++){
+        var sum = 0;
+        var count = 0;
+        for(var j = i - Math.floor(n/2); j < i + Math.floor(n/2); j++){
+            if(data[j]){
+                if(data[j] > 0) sum += data[j];
+                count++;
+            }
+        }
+        if(count < 1) count = 1;
+        smooth[i] = sum / count;
+    }
+    return smooth;
+}
+
+
+function colour(i){
+    var r = Math.sin(4*i);
+    var g = Math.sin(6*i);
+    var b = Math.cos(3*i);
+
+    r = (1.3*r*r)*127 + 100;
+    g = (g*g)*127 + 100;
+    b = (b*b)*127 + 100;
+
+    return `rgb(${r}, ${g}, ${b})`;
+}

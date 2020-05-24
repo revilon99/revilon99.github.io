@@ -2,19 +2,7 @@
 <html lang="en">
     <head>
         <title>Pong</title>
-        <style>
-            body{
-                margin: 0;
-                width: 100%;
-                height: 100vh;
-            }
-            canvas#game{
-                margin: 0;
-                width: 100%;
-                height: 100%;
-                background-color: black;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="styles.css">
 
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
         <meta name="mobile-web-app-capable" content="yes">
@@ -40,9 +28,15 @@
     </head>
     <body>
         <canvas id="game"></canvas>
+
+        <div style="display: none" id="darken">
+                      
+        </div>
+
+        <div id="playpause"></div>
         
         <script src="canvas.js"></script>
-        <script src="collision.js"></script>
+        <script src="/libraries/Collision.js"></script>
         <script src="balls.js"></script>
     </body>
 </html>

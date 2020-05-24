@@ -1,5 +1,5 @@
 /*
-collision.js
+Collision.js
 Oliver Cass (c) 2020
 All Rights Reserved
 */
@@ -36,7 +36,7 @@ var Collision = function(){
     this.reset();
 }
 
-var ColPhys = function(){
+var CollisionPhysics = new (function(){
     this.temp = new Collision();
 
     this.pointIntersectsRectangleOuter = function(x, y, velX, velY, radius, x1, y1, x2, y2, timeLimit, response){
@@ -207,6 +207,4 @@ var ColPhys = function(){
             -x * sinTheta + y * cosTheta
        ];
    }
-};
-
-var CollisionPhysics = new ColPhys();
+})();
