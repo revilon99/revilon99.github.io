@@ -216,11 +216,15 @@ document.getElementById('primary').insertBefore(newDiv, document.getElementById(
 
 var ctx = canvas.getContext('2d');
 
+var width, height;
+
 function init_canvas(){
       var dpr = window.devicePixelRatio || 1;
       var rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
+	  width = rect.width;
+	  height = rect.height;
       ctx.scale(dpr, dpr);
 }
 canvas.onresize = init_canvas;
@@ -343,7 +347,10 @@ var Ball = function(x, y){
 const EPSILON_TIME = 0.00000001;
 
 function tick(){
-    var timeLeft = 1;
+    var timeLeft = 1.0;
+	
+	var rect = canvas.getBoundingClientRect();
+	if(width != rect.width || height != rect.height) init_canvas();
 
     analyser.getByteFrequencyData(freqDataArray);
     smooth = rollingAverage(freqDataArray, 100);
