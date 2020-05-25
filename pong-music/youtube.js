@@ -350,7 +350,7 @@ function tick(){
     var timeLeft = 1.0;
 	
 	var rect = canvas.getBoundingClientRect();
-	if(width != rect.width || height != rect.height) init_canvas();
+	if(width != rect.width && rect.width > 0) init_canvas();
 
     analyser.getByteFrequencyData(freqDataArray);
     smooth = rollingAverage(freqDataArray, 100);
