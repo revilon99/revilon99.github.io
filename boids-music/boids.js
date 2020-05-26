@@ -32,8 +32,6 @@ var Boid = function(){
         var rule4 = new Vec2();
         if(target != null) rule4 = seek(this, target);
 		
-		var sep = params.musSepFac * smooth[Math.floor(this.colour*smooth.length)]/255
-		
         rule1.mult(params.sepFac + 10*(this.loc.y/canvas.clientHeight));
         rule2.mult(params.aliFac);
         rule3.mult(params.cohFac);
@@ -59,7 +57,14 @@ var Boid = function(){
     this.render = function(){
         var theta = Math.atan2(this.vel.y, this.vel.x);
         var r = Matrix.rotation(theta);
-        var points = Matrix.multiply(r, params.shape);
+		var music = params.music * smooth[Math.floor(this.colour*smooth.length)]/255;
+		var size = params.size + music;
+		console.log(size);
+		var shape = [
+			[size*1.5, -size, -size],
+			[     0.0, -size,  size]
+		];
+        var points = Matrix.multiply(r, shape);
 
         if(params.vis > 0 && this == boids[0]){
             ctx.beginPath();
@@ -305,7 +310,10 @@ var canvas = document.getElementById('game');
 
 var setup = false;
 canvas.addEventListener('click', function(e){
-	if(!setup) init();
+	if(!setup) {
+		init();
+		return;
+	}
     var mouse = getMousePos(e.target, e);
     target = new Vec2(mouse.x, mouse.y);
     setTimeout(function(){

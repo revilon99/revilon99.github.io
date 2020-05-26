@@ -1,0 +1,10 @@
+{
+    "name": "Run Pong Music Visualizer on YouTube",
+    "version": "1.0",
+    "manifest_version": 2,
+    "content_scripts": [{
+        "js": ["contentscript.js"],
+        "matches": ["https://*.youtube.com/*"]
+    }],
+    "web_accessible_resources": ["youtube.js"]
+}
