@@ -139,18 +139,18 @@ var CollisionPhysics = new (function(){
 		aResponse.t = t;
 		bResponse.t = t;
 		
-		var aImpactX = aResponse.getImpactX(A.x, A.velX + A.velR);
-		var aImpactY = aResponse.getImpactY(A.y, A.velY + A.velR);
-		var bImpactX = bResponse.getImpactX(B.x, B.velX + B.velR);
-		var bImpactY = bResponse.getImpactY(B.y, B.velY + B.velR);
+		var aImpactX = aResponse.getImpactX(A.x, A.velX);
+		var aImpactY = aResponse.getImpactY(A.y, A.velY);
+		var bImpactX = bResponse.getImpactX(B.x, B.velX);
+		var bImpactY = bResponse.getImpactY(B.y, B.velY);
 		
 		var lineAngle = Math.atan2(bImpactY - aImpactY, bImpactX - aImpactX);
 		
-		var result = this.rotate(A.velX + A.velR, A.velY + A.velR, lineAngle);
+		var result = this.rotate(A.velX, A.velY, lineAngle);
 		var aSpeedP = result[0];
 		var aSpeedN = result[1];
 		
-		result = this.rotate(B.velX + B.velR, B.velY + B.velR, lineAngle);
+		result = this.rotate(B.velX, B.velY, lineAngle);
 		var bSpeedP = result[0];
 		var bSpeedN = result[1];
 		
