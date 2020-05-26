@@ -21,10 +21,8 @@ function calculate(){
 	if(boids.length > 0 && params.numBoids > 0){
 		if(params.numBoids > boids.length){
 			for(var i = 0; i < params.numBoids - boids.length; i++){
-				var newBoid = document.createElement('a-cone');
-				newBoid.setAttribute('radius-bottom', '0.4');
-				newBoid.setAttribute('radius-top', '0');
-				newBoid.setAttribute('height', '0.9');
+				var newBoid = document.createElement('a-entity');
+				newBoid.setAttribute('gltf-model', "#origami");
 				newBoid.setAttribute('color', randomColour());
 				newBoid.setAttribute('boid', '');
 				newBoid.object3D.position.set(Math.random()*params.areaRad*2 - params.areaRad, 2 + Math.random()*params.areaRad, Math.random()*params.areaRad*2 - params.areaRad);
@@ -75,7 +73,7 @@ AFRAME.registerComponent('boid', {
 		this.vel.clampScalar(-params.maxSpeed, params.maxSpeed);
 		this.acc.multiplyScalar(0);
 		
-		this.el.object3D.lookAt(this.el.object3D.position.x + this.vel.x, this.el.object3D.position.y + this.vel.y, this.el.object3D.position.z + this.vel.z);
+		this.el.object3D.lookAt(this.el.object3D.position.x + this.vel.x, this.el.object3D.position.y, this.el.object3D.position.z + this.vel.z);
 		this.el.object3D.rotateX(Math.PI / 2);
 		
 		this.el.setAttribute('position', {
@@ -109,10 +107,8 @@ window.onload = function(){
 	calculate();
 
 	for(var i = 0; i < params.numBoids; i++){
-		var newBoid = document.createElement('a-cone');
-		newBoid.setAttribute('radius-bottom', '0.4');
-		newBoid.setAttribute('radius-top', '0');
-		newBoid.setAttribute('height', '0.9');
+		var newBoid = document.createElement('a-entity');
+		newBoid.setAttribute('gltf-model', "#origami");
 		newBoid.setAttribute('color', randomColour());
 		newBoid.setAttribute('boid', '');
 		newBoid.object3D.position.set(Math.random()*params.areaRad*2 - params.areaRad, 2 + Math.random()*params.areaRad, Math.random()*params.areaRad*2 - params.areaRad);
