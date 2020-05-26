@@ -146,11 +146,11 @@ var CollisionPhysics = new (function(){
 		
 		var lineAngle = Math.atan2(bImpactY - aImpactY, bImpactX - aImpactX);
 		
-		var result = this.rotate(A.velX, A.velY, lineAngle);
+		var result = this.rotate(A.velX + Math.cos(A.velR), A.velY + Math.sin(A.velR), lineAngle);
 		var aSpeedP = result[0];
 		var aSpeedN = result[1];
 		
-		result = this.rotate(B.velX, B.velY, lineAngle);
+		result = this.rotate(B.velX + Math.cos(B.velR), B.velY + Math.sin(B.velR), lineAngle);
 		var bSpeedP = result[0];
 		var bSpeedN = result[1];
 		
