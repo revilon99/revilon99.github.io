@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Boids with Music</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="description" content="Boids with Music">
+    </head>
+    <body>
+        <canvas id="game"></canvas>
+        <div style="display: none" id="darken">
+			<audio id="audio" src="All-Along-The-Watchtower.mp3" controls></audio>
+             <h2>Number of Boids</h2>
+             <input type="range" min="1" max="1000" scale="1" value="750" class="slider" id="numBoids">
+             <a id="numBoids_a"></a>
+             <h2>Neighbourhood Visibility</h2>
+             <input type="range" min="0" max="2" value="0" class="slider" id="vis">
+             <h3 id="vis_det"></h3>
+
+            <h1>Forces</h1>
+            <h2>Separation</h2>
+            <input type="range" min="0" max="100" scale="10" value="40" class="slider" id="sepFac">
+            <a id="sepFac_a"></a>
+			<h2>Music Separation</h2>
+            <input type="range" min="0" max="400" scale="10" value="400" class="slider" id="musSepFac">
+            <a id="musSepFac_a"></a>
+            <h2>Alignment</h2>
+            <input type="range" min="0" max="100" scale="10" value="15" class="slider" id="aliFac">
+            <a id="aliFac_a"></a>
+            <h2>Cohesion</h2>
+            <input type="range" min="0" max="100" scale="10" value="35" class="slider" id="cohFac">
+            <a id="cohFac_a"></a>
+            <h2>Target</h2>
+            <input type="range" min="0" max="100" scale="10" value="30" class="slider" id="targetFac">
+            <a id="targetFac_a"></a>
+            <h2>Target Timeout</h2>
+            <input type="range" min="0" max="1000" scale="10" value="15" class="slider" id="targetTime">
+            <a id="targetTime_a"></a>
+            <h2>Max Speed</h2>
+            <input type="range" min="0" max="100" scale="10" value="50" class="slider" id="maxSpeed">
+            <a id="maxSpeed_a"></a>
+            <h2>Max Force</h2>
+            <input type="range" min="0" max="20" scale="100" value="2" class="slider" id="maxForce">
+            <a id="maxForce_a"></a>
+
+            <h1>Neighbourhood</h1>
+            <h2 id="sep" style="color: #7384f0;">Separation</h2>
+            <input type="range" min="0" max="200" scale="1" value="6" class="slider" id="sepRad">
+            <a id="sepRad_a"></a>
+            <h2 id="ali" style="color: #aff073;">Alignment</h2>
+            <input type="range" min="0" max="400" scale="1" value="14" class="slider" id="aliRad">
+            <a id="aliRad_a"></a>
+            <h2 id="coh" style="color: #fc856a;">Cohesion</h2>
+            <input type="range" min="0" max="600" scale="1" value="30" class="slider" id="cohRad">
+            <a id="cohRad_a"></a>
+            <h2>Angle</h2>
+            <input type="range" min="0" max="180" scale="1" value="160" class="slider" id="angleDEG">
+            <a id="angleDEG_a"></a><a>°</a>
+            <h2>Size</h2>
+            <input type="range" min="0" max="25" value="2" class="slider" id="size">
+            <a id="size_a"></a>
+
+            <canvas id="neighbourhood"></canvas>            
+        </div>
+
+        <div id="playpause"></div>
+
+        <script src="/libraries/Vec2.js"></script>
+        <script src="/libraries/Matrix.js"></script>
+        <script src="boids.js"></script>
+    </body>
+</html>
