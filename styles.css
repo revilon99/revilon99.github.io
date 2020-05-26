@@ -1,0 +1,33 @@
+body{
+    background-color: #1e1e1e;
+    font-family: 'Open Sans', sans-serif;
+    color: white;
+}
+
+h1{
+    text-align: center;
+    color: white;
+    margin-bottom: 0;
+}
+h3{
+    margin-top: 0;
+    text-align: center;
+    color: white;
+}
+
+h2{
+    color: white;
+}
+
+a{
+    color: white;
+}
+
+div#projects a, div#demos a{
+    display: block;
+    background-color: white;
+    color: black;
+    margin: 20px;
+    padding: 20px;
+    text-decoration: none;
+}
