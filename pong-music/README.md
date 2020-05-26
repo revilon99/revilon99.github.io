@@ -1,6 +1,7 @@
 # Pong With Music
 https://revilon99.github.io/pong-music/  
 A music visualizer made combining the pong and the music-color-sync demo.  
+  
 https://github.com/revilon99/revilon99.github.io/tree/master/pong  
 https://github.com/revilon99/revilon99.github.io/tree/master/demos/music-color-sync  
 
@@ -14,7 +15,7 @@ Now the visualizer should be added above the video.
 Add balls as wished and watch it sync to whatever video you want to watch.  
 For best performance keep the mouse still.  
 
-See Also:
-## Pong
+## See Also:
+### Pong
 https://revilon99.github.io/pong/  
 The basis for this project.
