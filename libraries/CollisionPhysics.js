@@ -43,30 +43,42 @@ var CollisionPhysics = new (function(){
 		response.reset();
 		
 		//Right Border
-		this.pointIntersectsLineVertical(A, rect.x2, timeLimit, this.temp);
+		this.pointIntersectsLineVertical(A, rect.x2, timeLimit, this.temp, 'right');
 		if(this.temp.t < response.t) response.copy(this.temp);
 		
 		//Left Border
-		this.pointIntersectsLineVertical(A, rect.x1, timeLimit, this.temp);
+		this.pointIntersectsLineVertical(A, rect.x1, timeLimit, this.temp, 'left');
 		if(this.temp.t < response.t) response.copy(this.temp);
 		
 		//Top Border
-		this.pointIntersectsLineHorizontal(A, rect.y1, timeLimit, this.temp);
+		this.pointIntersectsLineHorizontal(A, rect.y1, timeLimit, this.temp, 'top');
 		if(this.temp.t < response.t) response.copy(this.temp);
 		
 		//Bottom Border
-		this.pointIntersectsLineHorizontal(A, rect.y2, timeLimit, this.temp);
+		this.pointIntersectsLineHorizontal(A, rect.y2, timeLimit, this.temp, 'bottom');
 		if(this.temp.t < response.t) response.copy(this.temp);
 	}
 	
-	this.pointIntersectsLineVertical = function(A, x, timeLimit, response){
+	this.pointIntersectsLineVertical = function(A, x, timeLimit, response, side){
 		response.reset();
 		
 		if(A.velX == 0 && (A.velR||0) == 0) return;
 		
 		var distance;
-		if(x > A.x) distance = x - A.x - A.radius;
-		else distance = x - A.x + A.radius;
+		if(side == 'left'){
+			distance = x - A.x + A.radius;
+			
+			if(A.x - A.radius < x) return;
+			
+		}else if(side == 'right'){
+			distance = x - A.x - A.radius;
+			
+			if(A.x + A.radius > x) return;
+		}else{
+			if(x > A.x) distance = x - A.x - A.radius;
+			else distance = x - A.x + A.radius;
+		}
+		
 		
 		var t = distance / (A.velX + A.velR);
 		if(t > 0 && t <= timeLimit){
@@ -76,14 +88,25 @@ var CollisionPhysics = new (function(){
         }
 	}
 	
-	this.pointIntersectsLineHorizontal = function(A, y, timeLimit, response){
+	this.pointIntersectsLineHorizontal = function(A, y, timeLimit, response, side){
 		response.reset();
 		
 		if(A.velY == 0 && (A.velR||0) == 0) return;
 		
 		var distance;
-		if(y > A.y) distance = y - A.y - A.radius;
-		else distance = y - A.y + A.radius;
+		
+		if(side == 'top'){
+			distance = y - A.y + A.radius;
+			
+			if(A.y - A.radius < y) return;
+		}else if(side == 'bottom'){
+			distance = y - A.y - A.radius;
+			
+			if(A.y + A.radius > y) return;
+		}else{
+			if(y > A.y) distance = y - A.y - A.radius;
+			else distance = y - A.y + A.radius;
+		}
 		
 		var t = distance / (A.velY + A.velR);
 		if(t > 0 && t <= timeLimit){

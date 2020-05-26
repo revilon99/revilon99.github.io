@@ -13,6 +13,8 @@ var MAX_SPEED = 5;
 const DELTA_R = 0.01;
 const DELTA_RAD = 65;
 
+const overlapForce = 1;
+
 var audioCtx, analyser, freqDataArray, smooth, source;
 
 var running = true;
@@ -156,12 +158,27 @@ function tick(){
     }while(timeLeft > EPSILON_TIME);}
 
     //Quick solution to the (rare but obvious) problem where balls get stuck
+	//Potentially make porportional to distance of overlap
     for(var b of balls){
         if(b == null) continue;
-        if(b.x - b.radius < 0) b.x = b.radius + 1;
-        if(b.x + b.radius > canvas.clientWidth) b.x = canvas.clientWidth - b.radius - 1;
-        if(b.y - b.radius < 0) b.y = b.radius + 1;
-        if(b.y + b.radius > canvas.clientHeight) b.y = canvas.clientHeight - b.radius - 1;
+		for(var b2 of balls){
+			if(b2 == null || b == b2) continue;
+			if(b.ballCollision(b2)){
+				var dx = b2.x - b.x;
+				var dy = b2.y - b.y;
+				var dxSq = dx*dx;
+				var dySq = dy*dy;
+				var hypSq = dxSq + dySq;
+				var hyp = Math.sqrt(hypSq);
+				b.velX += -(dx/hyp)*overlapForce;
+				b.velY += -(dy/hyp)*overlapForce;
+			}
+		}
+		
+        if(b.x - b.radius < 0) b.velX += overlapForce;
+        if(b.x + b.radius > canvas.clientWidth) b.velX -= overlapForce;
+        if(b.y - b.radius < 0) b.velY += overlapForce;
+        if(b.y + b.radius > canvas.clientHeight) b.velY -= overlapForce;
     }
     
     render();
