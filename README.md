@@ -20,7 +20,7 @@ A HTML5 implementation of the boids algorithm developed by Craig Reynolds
 https://www.red3d.com/cwr/boids/  
 ### BoidsVR
 https://revilon99.github.io/boidsVR/  
-A WebVR implementation of the boids algorithm built upon the A Frame library.  
+A WebVR implementation of the boids algorithm built upon the A-Frame library.  
 https://aframe.io/
 
 
