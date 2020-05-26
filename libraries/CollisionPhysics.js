@@ -139,10 +139,10 @@ var CollisionPhysics = new (function(){
 		aResponse.t = t;
 		bResponse.t = t;
 		
-		var aImpactX = aResponse.getImpactX(A.x, A.velX);
-		var aImpactY = aResponse.getImpactY(A.y, A.velY);
-		var bImpactX = bResponse.getImpactX(B.x, B.velX);
-		var bImpactY = bResponse.getImpactY(B.y, B.velY);
+		var aImpactX = aResponse.getImpactX(A.x, A.velX + A.velR);
+		var aImpactY = aResponse.getImpactY(A.y, A.velY + A.velR);
+		var bImpactX = bResponse.getImpactX(B.x, B.velX + B.velR);
+		var bImpactY = bResponse.getImpactY(B.y, B.velY + B.velR);
 		
 		var lineAngle = Math.atan2(bImpactY - aImpactY, bImpactX - aImpactX);
 		
