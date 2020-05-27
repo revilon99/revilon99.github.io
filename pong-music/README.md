@@ -8,7 +8,7 @@ https://github.com/revilon99/revilon99.github.io/tree/master/demos/music-color-s
 ## Use as a YouTube Music Visualizer
 Open a YouTube video.  
 Refresh the page.  
-Copy the youtube.min.js code. (https://github.com/revilon99/revilon99.github.io/blob/master/pong-music/youtube.min.js)
+Copy the youtube.min.js code. (https://github.com/revilon99/revilon99.github.io/blob/master/pong-music/youtube.min.js)  
 Paste this into the dev console (F-12 or ctrl-shift-i).  
 Press Enter.  
 Now the visualizer should be added above the video.  
