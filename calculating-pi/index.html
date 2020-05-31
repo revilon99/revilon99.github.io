@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Calculating PI</title>
+        <style>
+            canvas{
+                background-color: #e3e3e3;
+            }
+            a{
+                margin-bottom: 5px;
+            }
+            a.label{
+                font-weight: 700;
+            }
+            a#pi{
+                margin-left: 10px;
+            }
+            h1{
+                margin-bottom: 5px;
+            }
+            h2{
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Calculating PI</h1>
+        <h2>Current Estimate for PI:</h2><a id="pi">0</a><br>
+        <a class="label">Hits: </a> <a id="hits">0</a><br>
+        <a class="label">Total:</a> <a id="total">0</a><br>
+        <a class="label">Accuracy:</a> <a id="acc">0</a>%<br>
+        <a class="label">Number of Iterations Per Frame:</a>
+        <input id="nums" type="range" min="0" max="15" value="9"/><a id="num">512</a><br>
+        <canvas id="canvas" width="500" height="500"></canvas>
+        <button id="start" onclick="start()">Start</button>
+        <button id="reset" onclick="reset()">Reset</button>
+        <script>
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+
+            var hit = 0, total = 0;
+
+            var PI = 0;
+
+            var calculationsPerTick = 512;
+
+            var running = false;
+
+            function start(){
+                running = !running;
+                if(running){
+                    tick();
+                    document.getElementById('start').innerHTML = "Stop";
+                }else document.getElementById('start').innerHTML = "Start";
+            }
+
+            function tick(){
+                if(running) requestAnimationFrame(tick);
+                for(var i = 0; i < calculationsPerTick; i++) update();
+
+                PI = 4 * (hit / total);
+                document.getElementById('pi').innerHTML = PI;
+                document.getElementById('hits').innerHTML = hit;
+                document.getElementById('total').innerHTML = total;
+
+                var error = Math.abs((PI - Math.PI)/Math.PI)*100;
+                document.getElementById('acc').innerHTML = 100 - error;
+            }
+            
+            function update(){
+                total++;
+                ctx.fillStyle = "#ff0000";
+                var x = 1 - Math.random()*2, y = 1 - Math.random()*2;
+                if(x*x + y*y < 1) {
+                    hit++;
+                    ctx.fillStyle = '#6be841';
+                }
+
+                ctx.fillRect((x + 1)*canvas.clientWidth/2, (y + 1)*canvas.clientWidth/2, 1, 1)
+            }
+
+            document.getElementById('nums').addEventListener('input', function(){
+                calculationsPerTick = Math.pow(2, (document.getElementById('nums').value));
+                document.getElementById('num').innerHTML = calculationsPerTick;
+            }, false);
+
+            function reset(){
+                ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientWidth);
+                hit = 0;
+                total = 0;
+            }
+        </script>
+    </body>
+</html>
