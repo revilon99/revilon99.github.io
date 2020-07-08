@@ -1,0 +1,118 @@
+/*
+doc.css
+Oliver Cass (c) 2020
+All Rights Reserved
+
+the fundamental css design for all the docs
+*/
+
+html{
+    font-family: 'Open Sans', 'sans-serif';
+}
+
+body{
+    max-width: 140vh;
+    margin: auto;
+    padding: 0 10px;
+}
+
+h1, h2, h3, h4, p{
+    margin: 2px;
+}
+
+h1{
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+h2{
+    font-size: 3em;
+   
+}
+h3{
+    font-size: 1.8em;
+    border-bottom: 1px solid black;
+}
+
+div#header{
+    margin: 0 0 20px 0;
+    border-bottom: 1px solid black;
+}
+div#footer{
+    margin: 10px;
+    border-top: 1px solid black;
+}
+
+ocass{
+	display: block;
+	border: 1px solid black;
+	padding: 10px;
+}
+ocass div{
+	display: inline-block;
+	margin: 10px;
+}
+canvas{
+    border: 1px solid black;
+    display: inline-block;
+}
+
+
+div.img p{
+    display: inline-block;
+    width: calc(70% - 30px);
+}
+div.img img{
+    display: inline-block;
+    width: 30%;
+}
+
+a.eq{
+    margin: 0 30px 10px 10px;
+    display: inline-block;
+}
+
+code{
+    background-color: #e3e3e3;
+    padding: 5px;
+    display: inline-block;
+    white-space: pre-wrap;
+    display: block;
+}
+code.txt{
+    display: inline-block;
+}
+
+
+
+/*
+Phones
+*/
+@media only screen and (max-width: 450px){
+	div.img{
+		text-align: center;
+		width: 100%;
+	}
+	div.img p{
+		text-align: left;
+	    width: 100%;
+	}
+	div.img img{
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 374px){
+	
+}
+
+@media only screen and (max-width: 319px){
+	
+}
+
+/*
+Tablets
+*/
+@media only screen and (min-height: 1000px){
+	
+}

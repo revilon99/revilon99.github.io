@@ -1,0 +1,27 @@
+{
+	"name": "collision",
+	"title": "Collision",
+	"description": "A simple introduction into collision mechanics",
+	"pages": [
+		{
+			"name"    : "introduction",
+			"title"   : "Introduction",
+			"filename": "introduction.html"
+		},
+		{
+			"name"    : "bouncing-balls",
+			"title"   : "Bouncing Balls",
+			"filename": "bouncing-balls.html"
+		},
+		{
+			"name"    : "music-visualizer",
+			"title"   : "Music Visualizer",
+			"filename": "music-visualizer.html"
+		},
+		{
+			"name"    : "youtube",
+			"title"   : "YouTube Music Visualizer",
+			"filename": "youtube.html"
+		}
+	]
+}

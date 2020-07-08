@@ -1,0 +1,87 @@
+<p>
+This document will hopefully give a useful introduction to how
+collision mechanics work.
+</p>
+
+<p>
+We will only be covering circles for now because of the
+simplicity of the equation.<br>
+<eq>(x-a)^2 + (y-b)^2 = r^2</eq><br>
+Circles are one of the few shapes where all the required information
+for overlap is given in 3 variables, which will make the maths much
+easier later on.
+</p>
+<p>
+Have a play around with this demo to see how easy circles really are.
+</p>
+<ocass id="circle" js="scripts/circle-eq.js" width="500" height="500"></ocass><br>
+<p>
+With this information we can go on to calculate the types of collisions
+this circle might experience.
+</p>
+<p>
+You may be thinking that circles are not very useful and there are so many different
+shapes, but because circles only require 1 boolean function, they are extremely
+efficient, which when millions of collisions are being calculated per tick is
+very important
+</p><br>
+<h3>Ovals</h3>
+<p>
+Even though this will not be covered, it is worth noting that the circle equation
+(Eq.1), can be easily converted into an equation in an oval equation.
+</p>
+<eq>(x-a/w)^2 + (y-b/h)^2 = 1</eq>
+<p>
+Where:<br>
+w is the radius in the x-axis<br>
+h is the radius in the y-axis
+</p>
+<p>
+Have a play around with the demo to get a feel
+</p>
+<ocass id="oval" js="scripts/oval-eq.js" width="500" height="500"></ocass><br>
+<p>
+The properties of an oval can be adjusted so that it can approximate almost any shape.
+For collision you can also combine shapes to give a total object. This approximation
+is often used in game development since the number of calculations is massively reduced,
+and in a high speed game the difference between the detail, on say an arm, is negligable.
+</p>
+
+<h3>Circle-Boundary Collision</h3>
+<p>
+This is extremely easy to do, essentially you just have to calculate whether or not
+the distance from the center to a boundary is less than the radius
+</p>
+i.e.
+<code>if(x < radius         ||
+   width - x < radius ||
+   y < radius         ||
+   height - y < radius) return true;
+</code>
+<p>
+We will discuss how to solve collisions later, however often for boundaries its 
+easiest to just negate the velocity, in the direction of collision.
+</p>
+i.e.
+<code>if(x < radius || width - x < radius) velX = -velX;</code>
+
+<h3>Circle-Circle Collision</h3>
+<p>
+Imagine the following:
+</p>
+<div class="img">
+    <img src="img/1.png"></img>
+    <p>
+    To calculate whether or not there is a collision, the distance between the centers
+    of the circles should be calculated.<br>
+    <eq>x = a2 - a1</eq><br>
+    <eq>y = b2 - b1</eq><br>
+    By using Pythagoras' Equation:<br>
+    <eq>r^2 = x^2 + y^2</eq><br>
+    If this is less than the square distance of the sum of the two radii then a collision 
+    has occured
+    <p>
+</div>
+<p><br>
+Hence, the logic for Circle-Circle collision is:
+<code>if((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1) < (r1 + r2)*(r1 + r2)) return true;</code>

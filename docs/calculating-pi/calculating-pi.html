@@ -1,0 +1,128 @@
+<p>
+This short introduction should give an insight into why javascript is good.
+Even though it will never actually get close to a useful number for PI,
+the theory behind the method can be easily executed and visualised, which
+is more important than creating the new certain value for PI.
+</p><br>
+
+<div class="img">
+<p>
+    Imagine the following set up:<br>
+    If a circle, with a radius of 1 fit perfectly inside a square,
+    then the square would have a length of 2 on both sides.<br>
+    From our knowledge of maths, we can say:<br><br>
+    The area of the circle = πr^2, hence:<br>
+    A_circle = π<br><br>
+    The area of the square = w*h, hence:<br>
+    A_square = 2*2 = 4<br>
+</p>
+<img src="img/img-1.png"></img>
+</div><br><br>
+
+<div class="img">
+<img src="img/img-2.png"></img>
+<p>
+Now imagine if we were to choose a random point in the space, as shown.
+<br><br>
+Using the equation of the circle, x^2 + y^2 = r^2<br><br>
+We know that by checking if x^2 + y^2 < r^2, we can find out whether
+or not the point lies inside the circle.<br><br>
+
+From the areas, we know that the probablity of being inside the circle
+is the <br> (area of the circle) / (area of the square), or<br>
+<eq>P(hit) = π / 4</eq>
+</p>
+</div><br>
+
+<p>
+We can estimate P(hit) by choosing continally calculating 
+whether a random point is in the circle or not.<br>
+
+<eq>P(hit) ~= num in circle / total num</eq><br>
+
+By Subbing Eq.1 into Eq.2:<br>
+
+<eq>π / 4 ~= num in circle / total num</eq><br>
+
+Therefore we can say:<br>
+<eq> π = 4 * (num in circle / total num) </eq><br>
+</p>
+
+<h3>JavaScript Implementation</h3>
+This is one of the best demonstrations of the limitations of JavaScript,
+however that is not the point of this activity, its more to show the theory behind
+how PI is actually calculated in the real world.<br>
+
+The best way to iterate things in JavaScript is by using 
+<code class="txt">requestAnimationFrame(func)</code>, since it interferes the least
+with the general performance of the page. The difficulty lies in deciding 
+how many iterations to do during a tick. The essential rule is that the calculation
+time is less than the time till the next tick.<br>
+In this case we will just set it to an arbitrary value of 500.<br><br>
+
+<h4>Setting up initial variables</h4>
+The canvas is to visually demonstrate how the program works
+<code>var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+var hit = 0, total = 0, PI = 0;
+
+const calculationsPerTick = 500;
+
+var running = false;
+</code><br>
+
+<h4>Loop</h4>
+By using just buttons to control the loop we can define
+the following functions:<br>
+<code>function startstop(){
+    running = !running;
+    if(running){
+        tick();
+        document.getElementById('startstopbutton').innerHTML = "Stop";
+    }else document.getElementById('startstopbutton').innerHTML = "Start";
+}
+
+function tick(){
+    if(running) requestAnimationFrame(tick);
+    
+    //Calculate a random point calculationsPerTick number of times per frame
+    for(var i = 0; i < calculationsPerTick; i++) calculate();
+
+    //From Eq.4
+    PI = 4 * (hit / total);
+
+    //Display Results
+    document.getElementById('pi').innerHTML = PI;
+    document.getElementById('hits').innerHTML = hit;
+    document.getElementById('total').innerHTML = total;
+}
+</code><br>
+
+<h4>calculate()</h4>
+Generates a random point, and checks whether or not it lies in the circle
+<code>function calculate(){
+    total++;
+    ctx.fillStyle = "#ff0000"; //Pixel default as red
+    //Generate a random point between (-1, -1) to (1, 1)
+    var x = 1 - Math.random()*2, y = 1 - Math.random()*2;
+
+    if(x*x + y*y < 1){
+        hit++;
+        //Change pixel colour to green if in circle
+        ctx.fillStyle = '#6be841'; 
+    }
+    
+    //Draw pixel relative to canvas dimensions
+    ctx.fillRect((x + 1)*canvas.clientWidth/2, (y + 1)*canvas.clientWidth/2, 1, 1);
+}
+</code><br>
+
+The complete code can be viewed <a target="_blank" href="scripts/calculating-pi.js">here</a>.<br>
+All this generates the following:<br>
+<h2>Calculating PI</h2>
+<h3>Current Estimate for PI:</h3>
+<a id="pi">0</a><br>
+Hits:  <a id="hits">0</a><br>
+Total: <a id="total">0</a><br>
+<ocass id="calc_pi" js="scripts/calculating-pi.js" width="500" height="500"></ocass>

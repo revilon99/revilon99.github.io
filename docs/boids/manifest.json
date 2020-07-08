@@ -1,0 +1,22 @@
+{
+	"name": "boids",
+	"title": "Boids",
+	"description": "A introduction to Boids, the algorithm by Craig Reynolds that simulates the flocing nature of birds and fish",
+	"pages": [
+		{
+			"name"    : "introduction",
+			"title"   : "Introduction",
+			"filename": "introduction.html"
+		},
+		{
+			"name"    : "boids",
+			"title"   : "Boids",
+			"filename": "boids.html"
+		},
+		{
+			"name"    : "aframe",
+			"title"   : "Boids in VR",
+			"filename": "aframe.html"
+		}
+	]
+}

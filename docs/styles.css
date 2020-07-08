@@ -1,0 +1,38 @@
+/*
+docs/styles.css
+Oliver Cass (c) 2020
+All Rights Reserved
+*/
+
+html, body{
+    font-family: 'Open Sans', 'sans-serif';
+}
+
+h1{
+    font-family: 'Open Sans', 'sans-serif';
+    margin-bottom: 0;
+    text-align: center;
+}
+
+div#contact, div#docs{
+    max-width: 140vh;
+    margin: auto;
+}
+
+div#contact{
+    margin-bottom: 20px;
+}
+
+div.doc{
+    border: 2px solid black;
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 5px;
+}
+div#docs h2, p{
+    margin: 0;
+}
+
+a:visited{
+    color: blue;
+}

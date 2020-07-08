@@ -1,0 +1,12 @@
+{
+	"name": "calculating-pi",
+	"title": "Calculating PI",
+	"description": "An insight into how PI is calculating using an iterative method",
+	"pages": [
+		{
+			"name"    : "calculating-pi",
+			"title"   : "Calculating PI",
+			"filename": "calculating-pi.html"
+		}
+	]
+}
