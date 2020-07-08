@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Colour Bar - Oli Cass's Website</title>
+        <style>
+			body{
+				padding-bottom: 100px;
+			}
+            div.param{
+                display: inline-block;
+            }
+			canvas#bar{
+				width: 100%;
+			}
+        </style>
+    </head>
+    <body>
+        <canvas id="bar" width="5000" height="1000"></canvas>
+        <h1>Color Bar (RGB)</h1>
+
+<div class="param">
+    <h2>RGB Range (0 - 255)</h2>
+    <input type="range" min="0" max="255" value="127" class="slider" id="range">
+    <a id="range_a"></a>
+</div>
+<div class="param">
+    <h2>RGB Offset (0 - 255)</h2>
+    <input type="range" min="0" max="255" value="100" class="slider" id="offset">
+    <a id="offset_a"></a>
+</div>
+
+<br>
+
+<div class="param">
+    <h2>r sin Coefficient</h2>
+    <input type="range" min="0" max="100" scale="10" value="40" class="slider" id="rCoeff">
+    <a id="rCoeff_a"></a>
+</div>
+<div class="param">
+    <h2>r scale</h2>
+    <input type="range" min="0" max="5" value="2" class="slider" id="rScale">
+    <a id="rScale_a"></a>
+</div>
+<div class="param">
+    <h2>r Coefficient</h2>
+    <input type="range" min="0" max="100" scale="10" value="13" class="slider" id="rCo">
+    <a id="rCo_a"></a>
+</div>
+<div class="param">
+    <h2>r Offset</h2>
+    <input type="range" min="0" max="180" value="0" class="slider" id="rOffset">
+    <a id="rOffset_a"></a>
+</div>
+
+<br>
+
+<div class="param">
+    <h2>g sin Coefficient</h2>
+    <input type="range" min="0" max="100" scale="10" value="60" class="slider" id="gCoeff">
+    <a id="gCoeff_a"></a>
+</div>
+<div class="param">
+    <h2>g scale</h2>
+    <input type="range" min="0" max="10" value="2" class="slider" id="gScale">
+    <a id="gScale_a"></a>
+</div>
+<div class="param">
+    <h2>g Coefficient</h2>
+    <input type="range" min="0" max="100" scale="10" value="10" class="slider" id="gCo">
+    <a id="gCo_a"></a>
+</div>
+<div class="param">
+    <h2>g Offset</h2>
+    <input type="range" min="0" max="180" value="0" class="slider" id="gOffset">
+    <a id="gOffset_a"></a>
+</div>
+
+<br>
+
+<div class="param">
+    <h2>b sin Coefficient</h2>
+    <input type="range" min="0" max="100" scale="10" value="30" class="slider" id="bCoeff">
+    <a id="bCoeff_a"></a>
+</div>
+<div class="param">
+    <h2>b scale</h2>
+    <input type="range" min="0" max="10" value="2" class="slider" id="bScale">
+    <a id="bScale_a"></a>
+</div>
+<div class="param">
+    <h2>b Coefficient</h2>
+    <input type="range" min="0" max="100" scale="10" value="10" class="slider" id="bCo">
+    <a id="bCo_a"></a>
+</div>
+<div class="param">
+    <h2>b Offset</h2>
+    <input type="range" min="0" max="180" value="90" class="slider" id="bOffset">
+    <a id="bOffset_a"></a>
+</div>
+
+        <script>
+var params = {};
+
+var canvas = document.getElementById('bar');
+var ctx = canvas.getContext('2d');
+
+function tick(){
+    requestAnimationFrame(tick);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    //Colour Bar
+    for(var i = 0; i < canvas.width; i++){
+        ctx.fillStyle = colour(i/canvas.width);
+        ctx.fillRect(i, 0, 1, canvas.height);
+    }
+
+    //R Curve
+    ctx.beginPath();
+    for(var i = 0; i < canvas.width; i++){
+        if(i == 0) ctx.moveTo(i, canvas.height - R(i/canvas.width)*(canvas.height/255));
+        else ctx.lineTo(i, canvas.height - R(i/canvas.width)*(canvas.height/255));
+    }
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 10;
+    ctx.stroke();
+    ctx.closePath();
+
+    //G Curve
+    ctx.beginPath();
+    for(var i = 0; i < canvas.width; i++){
+        if(i == 0) ctx.moveTo(i, canvas.height - G(i/canvas.width)*(canvas.height/255));
+        else ctx.lineTo(i, canvas.height - G(i/canvas.width)*(canvas.height/255));
+    }
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 10;
+    ctx.stroke();
+    ctx.closePath();
+
+    //B Curve
+    ctx.beginPath();
+    for(var i = 0; i < canvas.width; i++){
+        if(i == 0) ctx.moveTo(i, canvas.height - B(i/canvas.width)*(canvas.height/255));
+        else ctx.lineTo(i, canvas.height - B(i/canvas.width)*(canvas.height/255));
+    }
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 10;
+    ctx.stroke();
+    ctx.closePath();
+}
+
+function colour(i){
+    return `rgb(${R(i)}, ${G(i)}, ${B(i)})`;
+}
+
+function R(i){
+    var r = Math.sin(params.rCoeff*i + params.rOffset*(Math.PI/180));
+    r = Math.pow(r, params.rScale);
+    r = (params.rCo*r)*params.range + params.offset;
+    return r;
+}
+function G(i){
+    var g = Math.sin(params.gCoeff*i + params.gOffset*(Math.PI/180));
+    g = Math.pow(g, params.gScale);
+    g = (params.gCo*g)*params.range + params.offset;
+    return g;
+}
+function B(i){
+    var b = Math.sin(params.bCoeff*i + params.bOffset*(Math.PI/180));
+    b = Math.pow(b, params.bScale);
+    b = (params.bCo*b)*params.range + params.offset;
+    return b;
+}
+
+
+function slider(e){
+    if(document.getElementById(e.target.id + "_a")) document.getElementById(e.target.id + "_a").innerHTML = e.target.value / (e.target.getAttribute('scale')||1);
+    params[e.target.id] = e.target.value / (e.target.getAttribute('scale')||1);
+}
+
+
+var inputs = document.getElementsByClassName('slider');
+for(var i of inputs){
+	if(document.getElementById(i.id + "_a")) document.getElementById(i.id + "_a").innerHTML = i.value / (i.getAttribute('scale')||1);
+	i.addEventListener('input', slider, false);
+	params[i.id] = i.value / (i.getAttribute('scale')||1);
+}
+
+requestAnimationFrame(tick);
+
+        </script>
+    </body>
+</html>

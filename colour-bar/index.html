@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Colour Bar - Oli Cass's Website</title>
+        <style>
+			html, body{
+				margin: 0;
+				overflow: hidden;
+			}
+            div.param{
+                display: inline-block;
+            }
+			div#bar-cont{
+				margin: 0;
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100vw;
+				height: 100vh;
+			}
+			canvas.bar{
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+			i#edit{
+				position: absolute;
+				right: 5px;
+				bottom: 5px;
+				font-size: 8vh;
+				cursor: pointer;
+				transition: 0.2s color;
+				transition: 0.2s background-color;
+				color: #343434;
+				padding: 1vh;
+				border-radius: 2vh;
+			}
+			i#edit:hover{
+				color: #000;
+			}
+        </style>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+		<div id="bar-cont">
+			<canvas class="bar" id="bar" width="5000" height="1000"></canvas>
+			<i id="edit" title="Edit" onclick="edit()" class="fa fa-edit"></i>
+		</div>
+        <script>
+var red = {
+	frequency: 10,
+	phase: 1.5,
+	amplitude: 70,
+	offset: 150,
+	width: 10
+}
+var green = {
+	frequency: 12,
+	phase: 0,
+	amplitude: 50,
+	offset: 150,
+	width: 10
+}
+var blue = {
+	frequency: 9,
+	phase: Math.PI,
+	amplitude: 50,
+	offset: 150,
+	width: 10
+}
+
+var canvas = document.getElementById('bar');
+var ctx = canvas.getContext('2d');
+
+var state = 0;
+var axisWidth = 5;
+/*
+supported states:
+	0 - default - just the colour bar
+	1 - RGB     - colour bar and RGB curves
+	2 - R       - colour bar and R curve for editing
+	3 - G       - colour bar and G curve for editing
+	4 - B       - colour bar and B curve for editing
+*/
+
+function tick(){
+    requestAnimationFrame(tick);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    //Colour Bar
+	if(state < 5){
+		for(var i = 0; i < canvas.width; i++){
+			ctx.fillStyle = colour(i/canvas.width);
+			ctx.fillRect(i, 0, 1, canvas.height);
+		}
+	}
+
+    //R Curve
+	if(state == 1 || state == 2){	
+		ctx.beginPath();
+		for(var i = 0; i < canvas.width; i++){
+			if(i == 0) ctx.moveTo(i, canvas.height - R(i/canvas.width)*(canvas.height/255));
+			else ctx.lineTo(i, canvas.height - R(i/canvas.width)*(canvas.height/255));
+		}
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = red.width;
+		ctx.stroke();
+		ctx.closePath();
+		
+		if(state === 2){
+			ctx.beginPath();
+			ctx.moveTo(0, canvas.height - canvas.height*(red.offset/255));
+			ctx.lineTo(canvas.width, canvas.height - canvas.height*(red.offset/255));
+			ctx.strokeStyle = "black";
+			ctx.lineWidth = axisWidth;
+			ctx.stroke();
+			ctx.closePath();
+		}
+	}
+
+    //G Curve
+	if(state == 1 || state == 3){
+		ctx.beginPath();
+		for(var i = 0; i < canvas.width; i++){
+			if(i == 0) ctx.moveTo(i, canvas.height - G(i/canvas.width)*(canvas.height/255));
+			else ctx.lineTo(i, canvas.height - G(i/canvas.width)*(canvas.height/255));
+		}
+		ctx.strokeStyle = "green";
+		ctx.lineWidth = green.width;
+		ctx.stroke();
+		ctx.closePath();
+	}
+
+    //B Curve
+	if(state == 1 || state == 4){
+		ctx.beginPath();
+		for(var i = 0; i < canvas.width; i++){
+			if(i == 0) ctx.moveTo(i, canvas.height - B(i/canvas.width)*(canvas.height/255));
+			else ctx.lineTo(i, canvas.height - B(i/canvas.width)*(canvas.height/255));
+		}
+		ctx.strokeStyle = "blue";
+		ctx.lineWidth = blue.width;
+		ctx.stroke();
+		ctx.closePath();
+	}
+}
+
+function colour(i){
+    return `rgb(${R(i)}, ${G(i)}, ${B(i)})`;
+}
+
+function R(i){
+    var r = Math.sin(red.frequency * i + red.phase);
+    r = r*red.amplitude + red.offset;
+    return r;
+}
+function G(i){
+    var g = Math.sin(green.frequency * i + green.phase);
+    g = g*green.amplitude + green.offset;
+    return g;
+}
+function B(i){
+    var b = Math.sin(blue.frequency*i + blue.phase);
+    b = b*blue.amplitude + blue.offset;
+    return b;
+}
+
+requestAnimationFrame(tick);
+
+const TOL = 10, DEFAULT = 10, HOVER = 30;
+var collision;
+canvas.addEventListener("mousemove", function(e){
+	var mouse;
+	try{
+		mouse = getMousePos(canvas, e);
+	}catch(e){
+		return;
+	}
+	
+	var i = mouse.x / canvas.clientWidth;
+	var y = 255 - (mouse.y / canvas.clientHeight) * 255;
+	
+	axisWidth = 5;
+
+	if(state == 1){ //RGB
+		collision = null;
+		
+		//check red
+		var r = R(i);
+		if(r > y - TOL && r < y + TOL) collision = "red";
+		
+		//check green
+		var g = G(i);
+		if(g > y - TOL && g < y + TOL) collision = "green";
+		
+		//check blue
+		var b = B(i);
+		if(b > y - TOL && b < y + TOL) collision = "blue";
+		
+		red.width = DEFAULT, green.width = DEFAULT, blue.width = DEFAULT;	
+		switch(collision){
+			case("red"):
+				red.width = HOVER;
+				canvas.title = "Red";
+				break;
+			case("green"):
+				green.width = HOVER;
+				canvas.title = "Green";
+				break;
+			case("blue"):
+				blue.width = HOVER;
+				canvas.title = "Blue";
+				break;
+			default:
+				canvas.title = "";
+		}
+		
+		if(collision != null) canvas.style.cursor = "pointer";
+	}else if(state == 2){
+		collision = null; 
+		if(red.offset > y - 2.5 && red.offset < y + 2.5){
+			collision = "red axis";
+			canvas.style.cursor = "all-scroll";
+			axisWidth = 10;
+		}
+	}
+	
+	if(collision == null) canvas.style.cursor = "initial";	
+}, false);
+
+canvas.addEventListener('click', function(){
+	if(state != 1) return;
+	switch(collision){
+		case("red"):
+			state = 2;
+			document.getElementById("edit").style.backgroundColor = "white";
+			document.getElementById("edit").style.color = "red";
+			break;
+		case("green"):
+			state = 3;
+			document.getElementById("edit").style.backgroundColor = "white";
+			document.getElementById("edit").style.color = "green";
+			break;
+		case("blue"):
+			state = 4;
+			document.getElementById("edit").style.backgroundColor = "white";
+			document.getElementById("edit").style.color = "blue";
+			break;
+		default:
+			
+	}
+	red.width = DEFAULT, green.width = DEFAULT, blue.width = DEFAULT;
+	canvas.style.cursor = "initial";
+	canvas.title = "";
+}, false);
+
+function edit(){
+	if(state == 1) state = 0;
+	else state = 1;
+	
+	if(state > 0) document.getElementById("edit").style.color = "#fff";
+	else document.getElementById("edit").style.color = "";
+	
+	if(state < 2) document.getElementById("edit").style.backgroundColor = "";
+}
+
+function getMousePos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect(); // abs. size of element
+
+	return {
+		x: ((evt.clientX||evt.touches[0].clientX) - rect.left),   // scale mouse coordinates after they have
+		y: ((evt.clientY||evt.touches[0].clientY)  - rect.top)     // been adjusted to be relative to element
+	}
+}
+
+        </script>
+    </body>
+</html>
