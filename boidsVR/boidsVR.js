@@ -92,6 +92,15 @@ AFRAME.registerComponent('boid', {
 	}
 });
 
+AFRAME.registerComponent("start-click", {
+    init: function() {
+        const sceneEl = this.el.sceneEl;
+        const canvasEl = sceneEl.canvas;
+
+        canvasEl.addEventListener('touchstart', attack);
+    }
+});
+
 window.onload = function(){
 	document.getElementById('playpause').addEventListener('click', function(e){
 		running = !running;
@@ -114,10 +123,6 @@ window.onload = function(){
 	scene = document.getElementById('scene');
 	
 	window.addEventListener('click', attack, false);
-	if (AFRAME.utils.device.isMobile ()){
-		AFRAME.scenes[0].canvas.addEventListener('touchstart', attack);
-		AFRAME.scenes[0].canvas.addEventListener('mousedown', attack);
-	}
 	
 	calculate();
 
