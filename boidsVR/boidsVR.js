@@ -113,16 +113,11 @@ window.onload = function(){
 	
 	scene = document.getElementById('scene');
 	
-	window.addEventListener('click', function(){
-		self_seek = true;
-		params.cohFac = 0;
-		params.aliFac = 0;
-		setTimeout(function(){ self_seek = false; }, 2000);
-		setTimeout(function(){  
-			params.cohFac = document.getElementById('cohFac').value/document.getElementById('cohFac').getAttribute('scale');
-			params.aliFac = document.getElementById('aliFac').value/document.getElementById('aliFac').getAttribute('scale');
-		}, 10000);
-	}, false);
+	window.addEventListener('click', attack, false);
+	if (AFRAME.utils.device.isMobile ()){
+		AFRAME.scenes[0].canvas.addEventListener('touchstart', attack);
+		AFRAME.scenes[0].canvas.addEventListener('mousedown', attack);
+	}
 	
 	calculate();
 
@@ -239,6 +234,18 @@ function boundary(boid, loc){
   steer.multiplyScalar(params.maxSpeed);
   steer.clampScalar(-params.maxForce, params.maxForce);
   return steer;
+}
+
+function attack(){
+	self_seek = true;
+		params.cohFac = 0;
+		params.aliFac = 0;
+		setTimeout(function(){ self_seek = false; }, 2000);
+		setTimeout(function(){  
+			params.cohFac = document.getElementById('cohFac').value/document.getElementById('cohFac').getAttribute('scale');
+			params.aliFac = document.getElementById('aliFac').value/document.getElementById('aliFac').getAttribute('scale');
+		}, 10000);
+	}
 }
 
 const randomColour = function(){
