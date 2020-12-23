@@ -113,7 +113,7 @@ window.onload = function(){
 	
 	scene = document.getElementById('scene');
 	
-	scene.addEventListener('click', function(){
+	window.addEventListener('click', function(){
 		self_seek = true;
 		params.cohFac = 0;
 		params.aliFac = 0;
