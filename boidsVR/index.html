@@ -28,17 +28,29 @@
 	</script>
   </head>
   <body>
-    <a-scene start-click id="scene" background="color: #9bf2f1">
-      <a-plane
-        position="0 0 0"
-        rotation="-90 0 0"
-        width="50"
-        height="50"
-        color="#378f1d"
-        shadow
-		start-click
-      ></a-plane>
-    </a-scene>
+	<a-scene id="scene" background="color: #9bf2f1">
+		<a-entity position="0 1.8 0" camera look-controls>
+			<a-entity 
+				cursor="fuse: true; fuseTimeout: 500"
+				position="0 0 -1"
+				material="color: black; shader: flat">
+			</a-entity>
+		</a-entity>
+		<a-circle
+			position="0 0 0"
+			rotation="-90 0 0"
+			radius="50"
+			color="#378f1d"
+			shadow>
+		</a-circle>
+		<a-circle
+			position="0 0.05 0"
+			rotation="-90 0 0"
+			radius="1"
+			color="#ff0000"
+			cursor-listener>
+		</a-circle>
+	</a-scene>
 	
 	        <div style="display: none" id="darken">
              <h2>Number of Boids</h2>
