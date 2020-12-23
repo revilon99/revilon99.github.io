@@ -238,14 +238,13 @@ function boundary(boid, loc){
 
 function attack(){
 	self_seek = true;
-		params.cohFac = 0;
-		params.aliFac = 0;
-		setTimeout(function(){ self_seek = false; }, 2000);
-		setTimeout(function(){  
-			params.cohFac = document.getElementById('cohFac').value/document.getElementById('cohFac').getAttribute('scale');
-			params.aliFac = document.getElementById('aliFac').value/document.getElementById('aliFac').getAttribute('scale');
-		}, 10000);
-	}
+	params.cohFac = 0;
+	params.aliFac = 0;
+	setTimeout(function(){ self_seek = false; }, 2000);
+	setTimeout(function(){  
+		params.cohFac = document.getElementById('cohFac').value/document.getElementById('cohFac').getAttribute('scale');
+		params.aliFac = document.getElementById('aliFac').value/document.getElementById('aliFac').getAttribute('scale');
+	}, 10000);
 }
 
 const randomColour = function(){
