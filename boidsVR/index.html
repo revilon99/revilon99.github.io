@@ -28,25 +28,43 @@
 	</script>
   </head>
   <body>
-	<a-scene id="scene" background="color: #9bf2f1">
+	<a-scene id="scene" background="color: #4ff9ff">
 		<a-entity position="0 1.8 0" camera look-controls>
 			<a-entity 
-				cursor="fuse: true; fuseTimeout: 500"
+				cursor="fuse: true; fuseTimeout: 1000"
 				position="0 0 -1"
-				material="color: black; shader: flat">
+				geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.011"
+				material="color: black; shader: flat"
+				animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+				animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+				animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1">
 			</a-entity>
 		</a-entity>
 		<a-circle
 			position="0 0 0"
 			rotation="-90 0 0"
 			radius="50"
-			color="#378f1d"
+			color="#0b991e"
 			shadow>
 		</a-circle>
+		<a-cylinder
+			position="-6.1 0.9 0"
+			rotation="0 90 0"
+			radius="0.05"
+			height="1.8"
+			color="black">
+		</a-cylinder>
 		<a-circle
-			position="0 0.05 0"
-			rotation="-90 0 0"
-			radius="1"
+			position="-6.01 1.8 0"
+			rotation="0 90 0"
+			radius="0.52"
+			color="#000000"
+			cursor-listener>
+		</a-circle>
+		<a-circle
+			position="-6 1.8 0"
+			rotation="0 90 0"
+			radius="0.5"
 			color="#ff0000"
 			cursor-listener>
 		</a-circle>
@@ -92,7 +110,7 @@
             <input type="range" min="0" max="150" scale="10" value="35" class="slider" id="aliRad">
             <a id="aliRad_a"></a>
             <h2 id="coh">Cohesion</h2>
-            <input type="range" min="0" max="150" scale="10" value="42" class="slider" id="cohRad">
+            <input type="range" min="0" max="150" scale="10" value="70" class="slider" id="cohRad">
             <a id="cohRad_a"></a>
 
 			<div id="end"></div>

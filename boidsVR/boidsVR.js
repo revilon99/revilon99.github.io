@@ -63,7 +63,7 @@ AFRAME.registerComponent('boid', {
 		var rule4 = boundary(this, this.el.object3D.position);
 		var rule5 = new THREE.Vector3();
 		
-		if(self_seek) rule5 = seek(this, new THREE.Vector3());
+		if(self_seek) rule5 = seek(this, new THREE.Vector3(0, 1.8, 0));
 		
 		rule1.multiplyScalar(params.sepFac);
 		rule2.multiplyScalar(params.aliFac);
@@ -79,6 +79,10 @@ AFRAME.registerComponent('boid', {
 		
 		this.vel.add(this.acc);
 		this.vel.clampScalar(-params.maxSpeed, params.maxSpeed);
+		
+		if(this.el.object3D.position.y < 3 && this.vel.y < 0) this.vel.y = this.vel.y / 1.1;
+		if(this.el.object3D.position.y < 1 && this.vel.y < 0) this.vel.y = this.vel.y / 1.8;
+		
 		this.acc.multiplyScalar(0);
 		
 		this.el.object3D.lookAt(this.el.object3D.position.x + this.vel.x, this.el.object3D.position.y + this.vel.y, this.el.object3D.position.z + this.vel.z);
@@ -240,11 +244,11 @@ function attack(){
 	self_seek = true;
 	params.cohFac = 0;
 	params.aliFac = 0;
-	setTimeout(function(){ self_seek = false; }, 2000);
+	setTimeout(function(){ self_seek = false; }, 3000);
 	setTimeout(function(){  
 		params.cohFac = document.getElementById('cohFac').value/document.getElementById('cohFac').getAttribute('scale');
 		params.aliFac = document.getElementById('aliFac').value/document.getElementById('aliFac').getAttribute('scale');
-	}, 10000);
+	}, 12000);
 }
 
 const randomColour = function(){
