@@ -80,8 +80,7 @@ AFRAME.registerComponent('boid', {
 		this.vel.add(this.acc);
 		this.vel.clampScalar(-params.maxSpeed, params.maxSpeed);
 		
-		if(this.el.object3D.position.y < 3 && this.vel.y < 0) this.vel.y = this.vel.y / 1.1;
-		if(this.el.object3D.position.y < 1 && this.vel.y < 0) this.vel.y = this.vel.y / 1.8;
+		if(this.el.object3D.position.y < 2 && this.vel.y < 0) this.vel.y = this.vel.y / ((3 - this.el.object3D.position.y));
 		
 		this.acc.multiplyScalar(0);
 		
