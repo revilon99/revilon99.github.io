@@ -7,6 +7,7 @@ All Rights Reserved
 var scene;
 var params = {}
 var up = new THREE.Vector3(1, 0, 0);
+var self_seek = false;
 
 function calculate(){
 	params.sepRadSq = params.sepRad * params.sepRad;
@@ -60,16 +61,21 @@ AFRAME.registerComponent('boid', {
 		var rule2 = alignment(this, localBoids);
 		var rule3 = cohesion(this, localBoids);
 		var rule4 = boundary(this, this.el.object3D.position);
+		var rule5 = new THREE.Vector3();
+		
+		if(self_seek) rule5 = seek(this, new THREE.Vector3());
 		
 		rule1.multiplyScalar(params.sepFac);
 		rule2.multiplyScalar(params.aliFac);
 		rule3.multiplyScalar(params.cohFac);
 		rule4.multiplyScalar(params.bouFac);
+		rule5.multiplyScalar(params.attackFac);
 		
 		this.acc.add(rule1);
 		this.acc.add(rule2);
 		this.acc.add(rule3);
 		this.acc.add(rule4);
+		this.acc.add(rule5);
 		
 		this.vel.add(this.acc);
 		this.vel.clampScalar(-params.maxSpeed, params.maxSpeed);
@@ -106,6 +112,18 @@ window.onload = function(){
     }
 	
 	scene = document.getElementById('scene');
+	
+	scene.addEventListener('click', function(){
+		self_seek = true;
+		params.cohFac = 0;
+		params.aliFac = 0;
+		setTimeout(function(){ self_seek = false; }, 2000);
+		setTimeout(function(){  
+			params.cohFac = document.getElementById('cohFac').value/document.getElementById('cohFac').getAttribute('scale');
+			params.aliFac = document.getElementById('aliFac').value/document.getElementById('aliFac').getAttribute('scale');
+		}, 10000);
+	}, false);
+	
 	calculate();
 
 	for(var i = 0; i < params.numBoids; i++){
@@ -170,7 +188,7 @@ function alignment(boid, boids){
   var count = 0;
   for(var b of boids){
     var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
-    if(dist < params.aliRadSq){
+    if(dist < params.aliRadSq && dist > 10){
       steer.add(b.vel);
       count++;
     }

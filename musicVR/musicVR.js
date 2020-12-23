@@ -10,7 +10,7 @@ var audioCtx, analyser, freqDataArray, smooth, source;
 
 var params = {};
 params.numBalls = 100;
-params.deltaRad = 1;
+params.deltaRad = 5;
 params.minRadius = 0.2;
 params.maxRadius = 2;
 params.areaRad = 50;

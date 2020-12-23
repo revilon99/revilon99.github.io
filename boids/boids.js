@@ -40,8 +40,6 @@ var Boid = function(){
         this.acc.add(rule3);
         this.acc.add(rule4);
 
-        
-
         this.vel.add(this.acc);
         this.vel.limit(params.maxSpeed);
         this.loc.add(this.vel);
