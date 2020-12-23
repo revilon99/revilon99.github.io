@@ -98,6 +98,8 @@ AFRAME.registerComponent("start-click", {
         const canvasEl = sceneEl.canvas;
 
         canvasEl.addEventListener('touchstart', attack);
+        canvasEl.addEventListener('click', attack);
+        this.el.addEventListener('click', attack);
     }
 });
 
