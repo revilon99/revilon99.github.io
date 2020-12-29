@@ -4,78 +4,80 @@ Oliver Cass (c) 2020
 All Rights Reserved
 */
 
-var scene;
-var params = {}
-var up = new THREE.Vector3(1, 0, 0);
-var self_seek = false;
+var boids = {}; //boids elements (will be filled with arrays)
 
-function calculate(){
-	params.sepRadSq = params.sepRad * params.sepRad;
-	params.aliRadSq = params.aliRad * params.aliRad;
-	params.cohRadSq = params.cohRad * params.cohRad;
+var scene; //scene element (needs to be defined in page script)
+
+var up = new THREE.Vector3(0, 1, 0); //y is up
+var cameraPos = new THREE.Vector3(0, 1.8, 0); //avg height of person (should be defined by camera)
+
+//game state variables
+var self_seek = false;
+var running = false;
+
+//temp global variables to reduce garbage collection
+var steer = new THREE.Vector3();
+var diff = new THREE.Vector3();
+
+var params = {}; //parameters object
+params = { //default values - incase not loaded by index.html
+	numBoids: 600.0,
+	areaRad :  40.0,
+	sepFac  :  70.0,	   aliFac:   1.5,	cohFac: 0.3,
+	bouFac  :   1.0,	attackFac:   1.0,
+	maxSpeed:   0.3,	 maxForce: 0.004,
+	minRad  :   3.2,	   sepRad:   1.5,
+	aliRad  :   3.7,	   cohRad:   6.5,
 	
-	params.searchRad = Math.max(params.sepRad, params.aliRad, params.cohRad);
-	params.searchRadSq = params.searchRad * params.searchRad;
-	
-	params.areaRadSq = params.areaRad * params.areaRad;
-	
-	if(boids.length > 0 && params.numBoids > 0){
-		if(params.numBoids > boids.length){
-			for(var i = 0; i < params.numBoids - boids.length; i++){
-				var newBoid = document.createElement('a-cone');
-				newBoid.setAttribute('radius-bottom', '0.4');
-				newBoid.setAttribute('radius-top', '0');
-				newBoid.setAttribute('height', '0.9');
-				newBoid.setAttribute('color', randomColour());
-				newBoid.setAttribute('boid', '');
-				newBoid.object3D.position.set(Math.random()*params.areaRad*2 - params.areaRad, 2 + Math.random()*params.areaRad, Math.random()*params.areaRad*2 - params.areaRad);
-				newBoid.object3D.up = up;
-				scene.appendChild(newBoid);
-			}
-		}else if(params.numBoids < boids.length){
-			for(var i = params.numBoids - 1; i < boids.length; i++){
-				try{
-					boids[i].el.parentNode.removeChild(boids[i].el);
-				}catch(e){}
-			}
-			boids.splice(params.numBoids - 1, boids.length - params.numBoids);
-		}
-	}
+	minRadSq: 0.3*0.3,
+	sepRadSq: 1.5*1.5,
+	aliRadSq: 3.7*3.7,
+	cohRadSq: 6.5*6.5
 }
 
-var boids = [];
-
+//boid property - can be added to any <a-entity>
 AFRAME.registerComponent('boid', {
+	schema: {type: 'string', default: 'default'},
+	
 	init: function() {		
 		this.vel = new THREE.Vector3(Math.random()*params.maxSpeed*2 - params.maxSpeed, Math.random()*params.maxSpeed*2 - params.maxSpeed, Math.random()*params.maxSpeed*2 - params.maxSpeed);
 		this.acc = new THREE.Vector3();
 		
-		boids.push(this);
+		this.seperation = new THREE.Vector3();
+		this.alignment = new THREE.Vector3();
+		this.cohesion = new THREE.Vector3();
+		this.boundary = new THREE.Vector3();
+		this.attack = new THREE.Vector3();
+		this.localBoids = [];
+		
+		if(boids[this.data] == undefined) boids[this.data] = [];
+		
+		boids[this.data].push(this);
 	},
 	
 	tick: function(time, timeDelta){
 		if(!running) return;
-		var localBoids = getLocalBoids(this);
+		if(boids[this.data].indexOf(this) === 0) calculateLocalBoids();
 		
-		var rule1 = seperation(this, localBoids);
-		var rule2 = alignment(this, localBoids);
-		var rule3 = cohesion(this, localBoids);
-		var rule4 = boundary(this, this.el.object3D.position);
-		var rule5 = new THREE.Vector3();
+		seperation(this);
+		alignment(this);
+		cohesion(this);
+		boundary(this);
 		
-		if(self_seek) rule5 = seek(this, new THREE.Vector3(0, 1.8, 0));
+		if(self_seek) seek(this, cameraPos, this.attack);
+		else this.attack.multiplyScalar(0);
 		
-		rule1.multiplyScalar(params.sepFac);
-		rule2.multiplyScalar(params.aliFac);
-		rule3.multiplyScalar(params.cohFac);
-		rule4.multiplyScalar(params.bouFac);
-		rule5.multiplyScalar(params.attackFac);
+		this.seperation.multiplyScalar(params.sepFac);
+		this.alignment.multiplyScalar(params.aliFac);
+		this.cohesion.multiplyScalar(params.cohFac);
+		this.boundary.multiplyScalar(params.bouFac);
+		this.attack.multiplyScalar(params.attackFac);
 		
-		this.acc.add(rule1);
-		this.acc.add(rule2);
-		this.acc.add(rule3);
-		this.acc.add(rule4);
-		this.acc.add(rule5);
+		this.acc.add(this.seperation);
+		this.acc.add(this.alignment);
+		this.acc.add(this.cohesion);
+		this.acc.add(this.boundary);
+		this.acc.add(this.attack);
 		
 		this.vel.add(this.acc);
 		this.vel.clampScalar(-params.maxSpeed, params.maxSpeed);
@@ -92,6 +94,8 @@ AFRAME.registerComponent('boid', {
 			y: this.el.object3D.position.y + this.vel.y,
 			z: this.el.object3D.position.z + this.vel.z
 		});
+		
+		this.localBoids = [];
 	}
 });
 
@@ -101,142 +105,104 @@ AFRAME.registerComponent('cursor-listener', {
 	}
 });
 
-window.onload = function(){
-	document.getElementById('playpause').addEventListener('click', function(e){
-		running = !running;
-		if(running) {
-			e.target.classList.remove('paused');
-			document.getElementById('darken').style.display = "none";
-		}else{
-			e.target.classList.add('paused');
-			document.getElementById('darken').style.display = "initial";
+function calculateLocalBoids(){
+	for(var boidsArray in boids){
+		for(var i = 0; i < boids[boidsArray].length; i++){
+			for(var j = i + 1; j < boids[boidsArray].length; j++){
+				if(boids[boidsArray][i].el.object3D.position.distanceToSquared(boids[boidsArray][j].el.object3D.position) < params.searchRadSq){
+					boids[boidsArray][i].localBoids.push(boids[boidsArray][j]);
+					boids[boidsArray][j].localBoids.push(boids[boidsArray][i]);
+				}
+			}
 		}
-	}, false);
-	
-	var inputs = document.getElementsByClassName('slider');
-    for(var i of inputs){
-        if(document.getElementById(i.id + "_a")) document.getElementById(i.id + "_a").innerHTML = i.value / (i.getAttribute('scale')||1);
-        i.addEventListener('input', slider, false);
-        params[i.id] = i.value / (i.getAttribute('scale')||1);
-    }
-	
-	scene = document.getElementById('scene');
-		
-	calculate();
-
-	for(var i = 0; i < params.numBoids; i++){
-		var newBoid = document.createElement('a-cone');
-		newBoid.setAttribute('radius-bottom', '0.4');
-		newBoid.setAttribute('radius-top', '0');
-		newBoid.setAttribute('height', '0.9');
-		newBoid.setAttribute('color', randomColour());
-		newBoid.setAttribute('boid', '');
-		newBoid.object3D.position.set(Math.random()*params.areaRad*2 - params.areaRad, 2 + Math.random()*params.areaRad, Math.random()*params.areaRad*2 - params.areaRad);
-		newBoid.object3D.up = up;
-		scene.appendChild(newBoid);
 	}
-	
-	running = true;
 }
 
-var running = false;
+function seperation(boid){
+	boid.seperation.set(0, 0, 0);
 
-function slider(e){
-    if(document.getElementById(e.target.id + "_a")) document.getElementById(e.target.id + "_a").innerHTML = e.target.value / (e.target.getAttribute('scale')||1);
-    params[e.target.id] = e.target.value / (e.target.getAttribute('scale')||1);
-    calculate();
-}
-
-function getLocalBoids(boid){
-	var localBoids = [];
-	for(var b of boids){
-		if(b == boid) continue;
-		if(boid.el.object3D.position.distanceToSquared(b.el.object3D.position) < params.searchRadSq) localBoids.push(b);
+	var count = 0;
+	for(var b of boid.localBoids){
+		var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
+		if(dist < params.sepRadSq){
+			diff.subVectors(boid.el.object3D.position, b.el.object3D.position); //always resets global vec anyway
+			diff.normalize();
+			diff.divideScalar(dist);
+			boid.seperation.add(diff);
+			count++;
+		}
 	}
-	return localBoids;
+
+	if(count > 0) boid.seperation.divide(count);
+	
+	if(boid.seperation.length() > 0){
+		boid.seperation.normalize();
+		boid.seperation.multiplyScalar(params.maxSpeed);
+		boid.seperation.sub(boid.vel);
+		boid.seperation.clampScalar(-params.maxForce, params.maxForce);
+	}else boid.seperation.set(0, 0, 0)
 }
 
-function seperation(boid, boids){
-  var steer = new THREE.Vector3();
-  var count = 0;
-  for(var b of boids){
-    var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
-    if(dist < params.sepRadSq){
-      var diff = new THREE.Vector3().subVectors(boid.el.object3D.position, b.el.object3D.position);
-      diff.normalize();
-      diff.divideScalar(dist);
-      steer.add(diff);
-      count++;
-    }
-  }
-  if(count > 0) steer.divide(count);
-  if(steer.length() > 0){
-    steer.normalize();
-    steer.multiplyScalar(params.maxSpeed);
-    steer.sub(boid.vel);
-    steer.clampScalar(-params.maxForce, params.maxForce);
-    return steer;
-  }
-  return new THREE.Vector3();
+function alignment(boid){
+	boid.alignment.set(0, 0, 0);
+  
+	var count = 0;
+	for(var b of boid.localBoids){
+		var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
+		if(dist < params.aliRadSq && dist > params.minRadSq){
+			boid.alignment.add(b.vel);
+			count++;
+		}
+	}
+
+	if(count > 0){
+		boid.alignment.divideScalar(count);
+		boid.alignment.normalize();
+		boid.alignment.multiplyScalar(params.maxSpeed);
+		boid.alignment.sub(boid.vel);
+		boid.alignment.clampScalar(-params.maxForce, params.maxForce);
+	}
 }
 
-function alignment(boid, boids){
-  var steer = new THREE.Vector3();
+function cohesion(boid){
+	steer.set(0, 0, 0); //set global steer variable to 0 (actually target..)
   
-  var count = 0;
-  for(var b of boids){
-    var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
-    if(dist < params.aliRadSq && dist > 10){
-      steer.add(b.vel);
-      count++;
-    }
-  }
-  
-  if(count > 0){
-    steer.divideScalar(count);
-    steer.normalize();
-    steer.multiplyScalar(params.maxSpeed);
-    steer.sub(boid.vel);
-    steer.clampScalar(-params.maxForce, params.maxForce);
-  }
-  
-  return steer;
+	var count = 0;
+	for(var b of boid.localBoids){
+		var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
+		if(dist < params.cohRadSq && dist > params.minRadSq){
+			steer.add(b.el.object3D.position);
+			count++;
+		}
+	}
+
+	if(count > 0){
+		steer.divideScalar(count);
+		seek(boid, steer, boid.cohesion);
+		return;
+	}
+	boid.cohesion.copy(steer);
 }
-function cohesion(boid, boids){
-  var target = new THREE.Vector3();
-  
-  var count = 0;
-  for(var b of boids){
-    var dist = boid.el.object3D.position.distanceToSquared(b.el.object3D.position);
-    if(dist < params.cohRadSq && dist > 10){ //BAD
-      target.add(b.el.object3D.position);
-      count++;
-    }
-  }
-  
-  if(count > 0){
-    target.divideScalar(count);
-    return seek(boid, target);
-  }
-  return target;
+
+function boundary(boid){
+	steer.set(0, 0, 0) //set global steer variable to 0
+	
+	var loc = boid.el.object3D.position;
+	
+	if(loc.y < 7) steer.y = 10 - loc.y;
+	if(loc.lengthSq() > 2*params.areaRadSq) steer.sub(loc);
+	steer.normalize();
+	steer.multiplyScalar(params.maxSpeed);
+	steer.clampScalar(-params.maxForce, params.maxForce);
+	boid.boundary.copy(steer);
 }
-function seek(boid, target){
-  var steer = new THREE.Vector3().subVectors(target, boid.el.object3D.position);
-  steer.normalize();
-  steer.multiplyScalar(params.maxSpeed);
-  steer.sub(boid.vel);
-  steer.clampScalar(-params.maxForce, params.maxForce);
-  return steer;
-  
-}
-function boundary(boid, loc){
-  var steer = new THREE.Vector3();
-  if(loc.y < 7) steer.y = 10 - loc.y;
-  if(loc.lengthSq() > 2*params.areaRadSq) steer.sub(loc);
-  steer.normalize();
-  steer.multiplyScalar(params.maxSpeed);
-  steer.clampScalar(-params.maxForce, params.maxForce);
-  return steer;
+
+function seek(boid, target, returnVec){
+	returnVec.subVectors(target, boid.el.object3D.position);
+	returnVec.normalize();
+	returnVec.multiplyScalar(params.maxSpeed);
+	returnVec.sub(boid.vel);
+	returnVec.clampScalar(-params.maxForce, params.maxForce);
 }
 
 function attack(){
@@ -248,8 +214,4 @@ function attack(){
 		params.cohFac = document.getElementById('cohFac').value/document.getElementById('cohFac').getAttribute('scale');
 		params.aliFac = document.getElementById('aliFac').value/document.getElementById('aliFac').getAttribute('scale');
 	}, 12000);
-}
-
-const randomColour = function(){
-  return 'rgb(' + (128 + Math.floor(Math.random()*127)) + ", " + (128 + Math.floor(Math.random()*127)) + ", " + (128 + Math.floor(Math.random()*127)) + ")";
 }
