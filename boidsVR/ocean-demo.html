@@ -15,7 +15,7 @@
 	<meta name="msapplication-TileColor" content="#00aba9">
 	<meta name="msapplication-config" content="/boidsVR/favicon/browserconfig.xml">
 	<meta name="theme-color" content="#ffffff">
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="boidsVR.js"></script>
     <script src="ocean-demo.js"></script>
@@ -56,17 +56,7 @@
 			<a-asset-item id="coral-7" src="models/coral-7.gltf"></a-asset-item>
 		</a-assets>
 	
-		<a-entity position="0 1.8 0" camera look-controls near="0.1">
-			<a-entity 
-				cursor="fuse: true; fuseTimeout: 1000"
-				position="0 0 -1"
-				geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.011"
-				material="color: black; shader: flat"
-				animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-				animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
-				animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1">
-			</a-entity>
-		</a-entity>
+		<a-entity position="0 1.8 0" camera look-controls="pointerLockEnabled: true" wasd-controls="acceleration:30"  near="0.1"></a-entity>
 		<a-circle
 			position="0 0 0"
 			rotation="-90 0 0"
