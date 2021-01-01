@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Cylinder Obstacle - BoidsVR</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	
+    <meta name="description" content="Boids in VR" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/boidsVR/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/boidsVR/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/boidsVR/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/boidsVR/favicon/site.webmanifest">
+	<link rel="mask-icon" href="/boidsVR/favicon/safari-pinned-tab.svg" color="#000000">
+	<link rel="shortcut icon" href="/boidsVR/favicon/favicon.ico">
+	<meta name="msapplication-TileColor" content="#00aba9">
+	<meta name="msapplication-config" content="/boidsVR/favicon/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="boidsVR.js"></script>
+    <script src="index.js"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-167457066-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-167457066-1');
+	</script>
+  </head>
+  <body>
+	<a-scene id="scene" background="color: #4ff9ff">
+		<a-entity position="0 1.8 0" camera look-controls="pointerLockEnabled: true" wasd-controls="acceleration:200; fly: true"  near="0.1">
+			<a-entity 
+				cursor="fuse: true; fuseTimeout: 1000"
+				position="0 0 -1"
+				geometry="primitive: ring; radiusInner: 0.008; radiusOuter: 0.011"
+				material="color: black; shader: flat"
+				animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
+				animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
+				animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1">
+			</a-entity>
+		</a-entity>
+		
+		<a-circle
+			position="0 0 0"
+			rotation="-90 0 0"
+			radius="100"
+			material="color: #0b991e"
+			shadow>
+		</a-circle>
+		<a-cylinder
+			position="0 40 -20"
+			rotation="0 90 0"
+			radius="4"
+			height="60"
+			material="color: red"
+			boid-obstacle="shape: cylinder;"
+			shadow>
+		</a-cylinder>
+		
+		<a-cylinder
+			position="20 40 -10"
+			rotation="0 90 0"
+			radius="4"
+			height="80"
+			material="color: red"
+			boid-obstacle="shape: cylinder;"
+			shadow>
+		</a-cylinder>
+		
+		<a-cylinder
+			position="-20 40 -20"
+			rotation="0 90 0"
+			radius="2"
+			height="80"
+			material="color: red"
+			boid-obstacle="shape: cylinder;"
+			shadow>
+		</a-cylinder>
+		
+		<a-sphere
+			position="20 20 10"
+			radius="6"
+			material="color: red"
+			boid-obstacle="shape: sphere; radius: 6"
+			shadow>
+		</a-sphere>
+	</a-scene>
+	
+	        <div style="display: none" id="darken">
+             <h2>Number of Boids</h2>
+             <input type="range" min="1" max="1000" value="100" class="slider" id="numBoids">
+             <a id="numBoids_a"></a>
+			 
+			 <h2>Area Radius</h2>
+             <input type="range" min="0" max="100" value="20" class="slider" id="areaRad">
+             <a id="areaRad_a"></a>
+
+            <h1>Forces</h1>
+            <h2>Separation</h2>
+            <input type="range" min="0" max="1000" scale="10" value="70" class="slider" id="sepFac">
+            <a id="sepFac_a"></a>
+            <h2>Alignment</h2>
+            <input type="range" min="0" max="100" scale="10" value="15" class="slider" id="aliFac">
+            <a id="aliFac_a"></a>
+            <h2>Cohesion</h2>
+            <input type="range" min="0" max="100" scale="10" value="1" class="slider" id="cohFac">
+            <a id="cohFac_a"></a>
+            <h2>Boundary</h2>
+            <input type="range" min="0" max="100" scale="10" value="10" class="slider" id="bouFac">
+            <a id="bouFac_a"></a>
+			<h2>Attack</h2>
+            <input type="range" min="0" max="100" scale="10" value="10" class="slider" id="attackFac">
+            <a id="attackFac_a"></a>
+			<h2>Avoidance</h2>
+            <input type="range" min="0" max="100" scale="10" value="40" class="slider" id="avoFac">
+            <a id="avoFac_a"></a>
+            <h2>Max Speed</h2>
+            <input type="range" min="0" max="100" scale="100" value="30" class="slider" id="maxSpeed">
+            <a id="maxSpeed_a"></a>
+            <h2>Max Force</h2>
+            <input type="range" min="0" max="100" scale="1000" value="4" class="slider" id="maxForce">
+            <a id="maxForce_a"></a>
+
+            <h1>Neighbourhood</h1>
+			<h2 id="sep">Min Radius</h2>
+            <input type="range" min="0" max="150" scale="10" value="40" class="slider" id="minRad">
+            <a id="minRad_a"></a>
+            <h2 id="sep">Separation</h2>
+            <input type="range" min="0" max="150" scale="10" value="30" class="slider" id="sepRad">
+            <a id="sepRad_a"></a>
+            <h2 id="ali">Alignment</h2>
+            <input type="range" min="0" max="150" scale="10" value="41" class="slider" id="aliRad">
+            <a id="aliRad_a"></a>
+            <h2 id="coh">Cohesion</h2>
+            <input type="range" min="0" max="150" scale="10" value="65" class="slider" id="cohRad">
+            <a id="cohRad_a"></a>
+
+			<div id="end"></div>
+        </div>
+
+        <div id="playpause"></div>
+  </body>
+</html>

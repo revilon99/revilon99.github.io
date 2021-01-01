@@ -3,6 +3,8 @@ boidsVR/ocean-demo.js
 Oliver Cass (c) 2020
 All Rights Reserved
 */
+var debug = 1;
+
 window.onload = function(){
 	document.getElementById('playpause').addEventListener('click', function(e){
 		BoidsVR.running = !BoidsVR.running;
@@ -26,18 +28,20 @@ window.onload = function(){
 		
 	calculate();
 	
-	for(var i = 0; i < BoidsVR.params.areaRadSq/20; i++){
+	for(var i = 0; i < debug*BoidsVR.params.areaRadSq/20; i++){
 		var newRock = document.createElement('a-entity');
 		newRock.setAttribute('gltf-model', randomRock());
 		newRock.object3D.position.set(Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad, -0.5, Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad);
+		newRock.object3D.rotateY(Math.random()*2*Math.PI);
 		scene.appendChild(newRock);
 	}
 	
-	for(var i = 0; i < BoidsVR.params.areaRadSq*1.3; i++){
+	for(var i = 0; i < debug*BoidsVR.params.areaRadSq*1.3; i++){
 		var newCoral = document.createElement('a-entity');
 		newCoral.setAttribute('gltf-model', randomCoral());
 		newCoral.setAttribute('random-color', '');
 		newCoral.object3D.position.set((Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad), 0, (Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad));
+		newRock.object3D.rotateY(Math.random()*2*Math.PI);
 		scene.appendChild(newCoral);
 	}
 
@@ -46,13 +50,19 @@ window.onload = function(){
 		var newFish = randomFish();
 		newBoid.setAttribute('gltf-model', newFish);
 		newBoid.setAttribute('boid', newFish);
+		if(newFish==="#Tuna") newBoid.setAttribute('scale', '1.5 1.5 1.5');
 		newBoid.setAttribute('animation-mixer', 'timeScale: 2');
 		newBoid.object3D.position.set(Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad, 2 + Math.random()*BoidsVR.params.areaRad, Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad);
 		newBoid.object3D.up = BoidsVR.up;
 		scene.appendChild(newBoid);
 	}
 	
-	BoidsVR.setParameter('maxSpeed', '#Dory', 1);
+	BoidsVR.setParameter('maxSpeed', '#Dory', 0.8);
+	BoidsVR.setParameter('maxSpeed', '#ClownFish', 0.5);
+	// predator-pray mechanics need work
+	// BoidsVR.setParameter('predator', '#Tuna', ['#ClownFish']);
+	// BoidsVR.setParameter('pray', '#ClownFish', ['#Tuna']);
+	BoidsVR.setParameter('sepRadSq', '#Tuna', 70);
 	
 	BoidsVR.running = true;
 }
@@ -99,7 +109,13 @@ function slider(e){
 
 var fish = [
 	'BrownFish',
+	'BrownFish',
 	'ClownFish',
+	'ClownFish',
+	'ClownFish',
+	'ClownFish',
+	'Dory',
+	'Dory',
 	'Dory',
 	'Tuna'
 ];

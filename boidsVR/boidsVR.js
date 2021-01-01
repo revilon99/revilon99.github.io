@@ -29,8 +29,9 @@ var BoidsVR = new (function(){
 	this.params = { //default values - incase not loaded by index.html
 		numBoids: 600.0,
 		areaRad :  40.0,
-		sepFac  :  70.0,	   aliFac:   1.5,	cohFac: 0.3,
+		sepFac  :  70.0,	   aliFac:   1.5,	cohFac: 0.1,
 		bouFac  :   1.0,	attackFac:   1.0,	avoFac: 3.0,
+		predFac :   2.0,	  prayFac:   2.0,
 		maxSpeed:   0.3,	 maxForce: 0.004,
 		minRad  :   3.2,	   sepRad:   1.5,	aliRad  :   3.7,
 		cohRad  :   6.5,	   seeRad:   7.0,
@@ -39,15 +40,46 @@ var BoidsVR = new (function(){
 		sepRadSq: 1.5*1.5,
 		aliRadSq: 3.7*3.7,
 		cohRadSq: 6.5*6.5,
+		seeRadSq: 7.0*7.0,
 		types   : {} // specific properties of types of boids, must have same object name as boids elements
 	};
 	
 	this.calculateLocalBoids = function(boidsArray){
 		for(var i = 0; i < this.boids[boidsArray].length; i++){
 			for(var j = i + 1; j < this.boids[boidsArray].length; j++){
-				if(this.boids[boidsArray][i].el.object3D.position.distanceToSquared(this.boids[boidsArray][j].el.object3D.position) < this.getParameter('searchRadSq', boidsArray)){
+				if(this.boids[boidsArray][i].el.object3D.position.distanceToSquared(this.boids[boidsArray][j].el.object3D.position) < this.getParameter('seeRadSq', boidsArray)){
 					this.boids[boidsArray][i].localBoids.push(this.boids[boidsArray][j]);
 					this.boids[boidsArray][j].localBoids.push(this.boids[boidsArray][i]);
+				}
+			}
+		}
+		
+		if(this.params.types[boidsArray] != undefined && this.params.types[boidsArray].predator != undefined){
+			for(var pray of this.params.types[boidsArray].predator){
+				if(this.boids[pray] == undefined) continue;
+				for(var i = 0; i < this.boids[boidsArray].length; i++){
+					for(var j = i + 1; j < this.boids[pray].length; j++){
+						var dist = this.boids[boidsArray][i].el.object3D.position.distanceToSquared(this.boids[pray][j].el.object3D.position);
+						if(dist < this.getParameter('seeRadSq', boidsArray) && dist > this.getParameter('minRadSq', boidsArray)){
+							this.boids[boidsArray][i].localPray.push(this.boids[pray][j]);
+							this.boids[pray][j].localPray.push(this.boids[boidsArray][i]);
+						}
+					}
+				}
+			}
+		}
+		
+		if(this.params.types[boidsArray] != undefined && this.params.types[boidsArray].pray != undefined){
+			for(var predator of this.params.types[boidsArray].pray){
+				if(this.boids[predator] == undefined) continue;
+				for(var i = 0; i < this.boids[boidsArray].length; i++){
+					for(var j = i + 1; j < this.boids[predator].length; j++){
+						var dist = this.boids[boidsArray][i].el.object3D.position.distanceToSquared(this.boids[predator][j].el.object3D.position);
+						if(dist < this.getParameter('seeRadSq', boidsArray) && dist > this.getParameter('minRadSq', boidsArray)){
+							this.boids[boidsArray][i].localPredators.push(this.boids[predator][j]);
+							this.boids[predator][j].localPredators.push(this.boids[boidsArray][i]);
+						}
+					}
 				}
 			}
 		}
@@ -152,12 +184,52 @@ var BoidsVR = new (function(){
 				
 				boid.avoidance.subVectors(this.ahead, this.steer);
 				boid.avoidance.normalize();
-				boid.avoidance.clampScalar(-this.getParameter('maxForce', boid.data), this.getParameter('maxForce', boid.data));
+				boid.avoidance.clampScalar(-this.getParameter('maxForce', boid.data)*4, this.getParameter('maxForce', boid.data)*4);
 				return;
 			}
 		}
 		
 		boid.avoidance.set(0, 0, 0);
+	}
+	
+	this.predator = function(boid){
+		var minDistSq = 1E10;
+		var closestPray = null;
+		for(var b of boid.localPray){
+			this.steer.subVectors(boid.el.object3D.position, b.el.object3D.position);
+			var distSq = this.steer.lengthSq();
+			if(distSq < minDistSq) {
+				minDistSq = distSq;
+				closestPray = b;
+			}
+		}
+		
+		if(closestPray == null){
+			boid.predator.set(0, 0, 0);
+			return;
+		}
+		this.seek(boid, closestPray.el.object3D.position, boid.predator);	
+		boid.predator.clampScalar(-this.getParameter('maxForce', boid.data), this.getParameter('maxForce', boid.data));		
+	}
+	
+	this.pray = function(boid){
+		var minDistSq = 1E10;
+		var closestPredator = null;
+		for(var b of boid.localPredators){
+			this.steer.subVectors(b.el.object3D.position, boid.el.object3D.position);
+			var distSq = this.steer.lengthSq();
+			if(distSq < minDistSq) {
+				minDistSq = distSq;
+				closestPredator = b;
+			}
+		}
+		
+		if(closestPredator == null){
+			boid.pray.set(0, 0, 0);
+			return;
+		}
+		boid.pray.subVectors(closestPredator.el.object3D.position, boid.el.object3D.position);		
+		boid.pray.normalize();
 	}
 
 	this.seek = function(boid, target, returnVec){
@@ -245,9 +317,13 @@ AFRAME.registerComponent('boid', {
 		this.alignment = new THREE.Vector3();
 		this.cohesion = new THREE.Vector3();
 		this.avoidance = new THREE.Vector3();
+		this.predator = new THREE.Vector3();
+		this.pray = new THREE.Vector3();
 		this.boundary = new THREE.Vector3();
 		this.attack = new THREE.Vector3();
 		this.localBoids = [];
+		this.localPray = [];
+		this.localPredators = [];
 		
 		if(BoidsVR.boids[this.data] == undefined) BoidsVR.boids[this.data] = [];
 		
@@ -263,6 +339,8 @@ AFRAME.registerComponent('boid', {
 		if(BoidsVR.cohesionGlobal)   BoidsVR.cohesion(this);
 		BoidsVR.boundary(this);
 		BoidsVR.avoidance(this);
+		if(BoidsVR.getParameter('predator', this.data) != undefined) BoidsVR.predator(this);
+		if(BoidsVR.getParameter('pray', this.data) != undefined) BoidsVR.pray(this);
 		
 		if(BoidsVR.self_seek) BoidsVR.seek(this, cameraPos, this.attack);
 		else this.attack.multiplyScalar(0);
@@ -274,6 +352,8 @@ AFRAME.registerComponent('boid', {
 		this.boundary.multiplyScalar(BoidsVR.getParameter('bouFac', this.data));
 		this.attack.multiplyScalar(BoidsVR.getParameter('attackFac', this.data));
 		this.avoidance.multiplyScalar(BoidsVR.getParameter('avoFac', this.data));
+		this.predator.multiplyScalar(BoidsVR.getParameter('predFac', this.data));
+		this.pray.multiplyScalar(BoidsVR.getParameter('prayFac', this.data));
 		
 		if(BoidsVR.seperationGlobal) this.acc.add(this.seperation);
 		if(BoidsVR.alignmentGlobal) this.acc.add(this.alignment);
@@ -281,6 +361,8 @@ AFRAME.registerComponent('boid', {
 		this.acc.add(this.boundary);
 		this.acc.add(this.attack);
 		this.acc.add(this.avoidance);
+		this.acc.add(this.predator);
+		this.acc.add(this.pray);
 		
 		this.vel.add(this.acc);
 		this.vel.clampScalar(-BoidsVR.getParameter('maxSpeed', this.data), BoidsVR.getParameter('maxSpeed', this.data));
@@ -299,6 +381,8 @@ AFRAME.registerComponent('boid', {
 		});
 		
 		this.localBoids = [];
+		this.localPray = [];
+		this.localPredators = [];
 	}
 });
 

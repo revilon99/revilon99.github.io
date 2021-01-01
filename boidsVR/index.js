@@ -34,8 +34,8 @@ window.onload = function(){
 		newBoid.setAttribute('height', '0.9');
 		newBoid.setAttribute('color', randomColour());
 		newBoid.setAttribute('boid', '');
-		newBoid.object3D.position.set(Math.random()*params.areaRad*2 - params.areaRad, 2 + Math.random()*params.areaRad, Math.random()*params.areaRad*2 - params.areaRad);
-		newBoid.object3D.up = up;
+		newBoid.object3D.position.set(Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad, 2 + Math.random()*BoidsVR.params.areaRad, Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad);
+		newBoid.object3D.up = BoidsVR.up;
 		scene.appendChild(newBoid);
 	}
 	
@@ -67,7 +67,7 @@ function calculate(){
 				newBoid.setAttribute('color', randomColour());
 				newBoid.setAttribute('boid', '');
 				newBoid.object3D.position.set(Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad, 2 + Math.random()*BoidsVR.params.areaRad, Math.random()*BoidsVR.params.areaRad*2 - BoidsVR.params.areaRad);
-				newBoid.object3D.up = up;
+				newBoid.object3D.up = BoidsVR.up;
 				scene.appendChild(newBoid);
 			}
 		}else if(BoidsVR.params.numBoids < BoidsVR.boids.length){
@@ -80,7 +80,7 @@ function calculate(){
 		}
 	}
 }
-}
+
 
 function slider(e){
     if(document.getElementById(e.target.id + "_a")) document.getElementById(e.target.id + "_a").innerHTML = e.target.value / (e.target.getAttribute('scale')||1);
