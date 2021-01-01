@@ -16,6 +16,7 @@ var BoidsVR = new (function(){
 	//game state variables
 	this.running = false;
 	this.self_seek = false;
+	this.seperationGlobal = true;
 	this.alignmentGlobal = true;
 	this.cohesionGlobal = true;
 	
