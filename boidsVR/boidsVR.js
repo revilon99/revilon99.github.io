@@ -342,7 +342,7 @@ AFRAME.registerComponent('boid', {
 		if(BoidsVR.getParameter('predator', this.data) != undefined) BoidsVR.predator(this);
 		if(BoidsVR.getParameter('pray', this.data) != undefined) BoidsVR.pray(this);
 		
-		if(BoidsVR.self_seek) BoidsVR.seek(this, cameraPos, this.attack);
+		if(BoidsVR.self_seek) BoidsVR.seek(this, BoidsVR.cameraPos, this.attack);
 		else this.attack.multiplyScalar(0);
 		
 		

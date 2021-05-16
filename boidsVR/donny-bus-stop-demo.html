@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Ocean - BoidsVR</title>
+    <title>Donny Bus Stop Demo - BoidsVR</title>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	
     <meta name="description" content="Boids in VR" />
@@ -18,7 +18,7 @@
     <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script src="boidsVR.js"></script>
-    <script src="ocean-demo.js"></script>
+    <script src="donny-bus-stop-demo.js"></script>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-167457066-1"></script>
 	<script>
@@ -37,6 +37,7 @@
 			<a-asset-item id="ClownFish" src="models/ClownFish.gltf"></a-asset-item>
 			<a-asset-item id="Dory" src="models/Dory.gltf"></a-asset-item>
 			<a-asset-item id="Tuna" src="models/Tuna.gltf"></a-asset-item>
+			<a-asset-item id="DonnyBusStop" src="models/DonnyBusStop.gltf"></a-asset-item>
 			
 			<!-- https://www.cgtrader.com/free-3d-models/exterior/landscape/rocks-d92307df-e28a-4119-ad4b-40fe7c3cf6e1 by rkuhl -->
 			<a-asset-item id="rock-01" src="models/rock-01.gltf"></a-asset-item>
@@ -78,13 +79,13 @@
 
             <h1>Forces</h1>
             <h2>Separation</h2>
-            <input type="range" min="0" max="2000" scale="10" value="1000" class="slider" id="sepFac">
+            <input type="range" min="0" max="1000" scale="10" value="700" class="slider" id="sepFac">
             <a id="sepFac_a"></a>
             <h2>Alignment</h2>
             <input type="range" min="0" max="100" scale="10" value="15" class="slider" id="aliFac">
             <a id="aliFac_a"></a>
             <h2>Cohesion</h2>
-            <input type="range" min="0" max="100" scale="100" value="12" class="slider" id="cohFac">
+            <input type="range" min="0" max="100" scale="100" value="15" class="slider" id="cohFac">
             <a id="cohFac_a"></a>
             <h2>Boundary</h2>
             <input type="range" min="0" max="100" scale="10" value="10" class="slider" id="bouFac">

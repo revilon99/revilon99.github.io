@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Madelbrot</title>
+		<style>
+			html, body{
+				overflow: hidden;
+				margin: 0;
+			}
+			#canvas{
+				width: 100vw;
+				height: 100vh;
+				background-color: #000;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="canvas" width="700" height="500"></canvas>
+		<script src="mandelbrot.js"></script>
+		<script>
+			let canvas = document.getElementById('canvas');
+			let ctx    = canvas.getContext('2d');
+			
+			const WIDTH  = window.innerWidth;
+			const HEIGHT = window.innerHeight;
+			ctx.canvas.width  = WIDTH;
+			ctx.canvas.height = HEIGHT;
+			
+			let setCenter = {x: -0.5, y:0};
+			let zoom = 0.5;
+				
+			
+			const colors = new Array(16).fill(0).map((_, i) => i === 0 ? '#000' : `#${((1 << 24) * Math.random() | 0).toString(16)}`);
+			
+			function paint(){
+				let aspectRatio = WIDTH/HEIGHT;
+				let x0 = setCenter.x - aspectRatio/zoom;
+				let x1 = setCenter.x + aspectRatio/zoom;
+				let y0 = setCenter.y - 1/(zoom);
+				let y1 = setCenter.y + 1/(zoom);
+
+				for(let x = 0; x < WIDTH; x++){
+					for(let y = 0; y < HEIGHT; y++){
+						const [m, isMandelbrotSet] = mandelbrot(x0 + (x / WIDTH) * (x1 - x0), y0 + (y / HEIGHT) * (y1 - y0));
+						ctx.fillStyle = colors[isMandelbrotSet ? 0 : (m % colors.length - 1) + 1];
+						ctx.fillRect(x, y, 1, 1);
+					}
+				}
+			}
+			
+			function max(a, b){
+				if(a > b) return a;
+				return b;
+			}
+			function min(a, b){
+				if(a < b) return a;
+				return b;
+			}
+			
+			window.onload = paint();
+			
+			canvas.addEventListener('mousedown', function(){
+				
+			}, false);
+			canvas.addEventListener('mouseup', function(){
+				
+			}, false);
+			
+		</script>
+	</body>
+</html>
