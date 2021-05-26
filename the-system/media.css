@@ -1,0 +1,30 @@
+
+/*
+Phones
+*/
+@media only screen and (max-width: 450px){
+
+}
+
+@media only screen and (max-width: 374px){
+    div#content{
+        font-size: 1.7em;
+    }
+}
+
+@media only screen and (max-width: 319px){
+    div#content{
+        font-size: 1.7em;
+    }
+}
+
+/*
+Tablets
+*/
+@media only screen and (min-height: 1000px){
+
+}
+
+@media only screen and (min-height: 1000px) and (max-width: 800px){
+
+}
