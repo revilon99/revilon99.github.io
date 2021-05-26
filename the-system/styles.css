@@ -122,7 +122,7 @@ a.mealdescription{
 
 div#calendar-add a{
 	font-size: 5em;
-	margin: 40% 32%;
+	margin: 51% 28% 0;
 	height: 0.65em;
 	position: relative;
 	line-height: 0.6;
@@ -177,17 +177,18 @@ div.plan a.date{
 
 div#add-new-meal{
 	position: fixed;
-	top: 5vh;
+	top: 3vh;
 	left: 50%;
-	margin-left: calc(-460px/2);
-	width: 460px;
-	height: 85vh;
+	margin-left: calc( -1*min(460px, 95vw)/2 );
+	width: calc(min(460px, 95vw));
+	height: 90vh;
 	background-color: #B4C4AE;
 	display: none;
 	text-align: center;
-	font-family: 'Roboto', sans-serif;
+	font-family:
+	'Roboto', sans-serif;
 	overflow-y: auto;
-	padding-bottom: 60px;
+	padding-bottom: 20px;
 	font-size: 0.4em;
 }
 
@@ -252,34 +253,37 @@ button#submit-meal{
 div#personal-profile{
 	text-transform: capitalize;
 	position: fixed;
-	top: 5vh;
-	left: 5vh;
-	width: calc(100vw - 10vh);
-	height: 85vh;
+	top: 3vh;
+	left: 50%;
+	margin-left: calc( -1*min(460px, 90vw)/2 );
+	width: calc(min(460px, 90vw));
+	height: 90vh;
 	background-color: #B4C4AE;
 	display: none;
 	text-align: center;
 	font-family: 'Roboto', sans-serif;
 	overflow-y: auto;
-	padding-bottom: 60px;
-	font-size: 6em;
+	padding-bottom: 20px;
+	font-size: 1.3em;
 }
 div#personal-profile h1{
 	line-height: 0;
-	border-bottom: 2px solid block;
+	font-size: 3em;
 }
+div#pp-stats a{font-size: 1.6em;line-height: 1em;}
 div#pp-calendar{
-	height: 60vh;
-	width:  calc(100vw - 15vh);
+	height: 65vh;
+	width: calc(95%);
 	margin: auto;
 	overflow-y: hidden;
 	overflow-x: auto;
 	white-space: nowrap;
-	padding-bottom: 100px;
+	padding-bottom: 54px;
+	font-size: 1.8em;
+	line-height: 1em;
 }
 div#pp-calendar div.date{
-	width:  calc(90vw - 15vh);
-	height: 60vh;
+	width: 84%;
 	background-color: #ae875bcc;
 }
 
