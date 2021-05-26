@@ -54,7 +54,7 @@ div#lobby::-webkit-scrollbar {
 
 div.member{
 	width: 95%;
-	background-color: #586994;
+	background-color: #a3b6e6;
 	float: left;
 	margin: 3px;
 	padding: 5px;
@@ -182,7 +182,7 @@ div#add-new-meal{
 	margin-left: calc( -1*min(460px, 95vw)/2 );
 	width: calc(min(460px, 95vw));
 	height: 90vh;
-	background-color: #B4C4AE;
+	background-color: #ccdbdf;
 	display: none;
 	text-align: center;
 	font-family:
@@ -258,7 +258,7 @@ div#personal-profile{
 	margin-left: calc( -1*min(460px, 90vw)/2 );
 	width: calc(min(460px, 90vw));
 	height: 90vh;
-	background-color: #B4C4AE;
+	background-color: #c6d4e6;
 	display: none;
 	text-align: center;
 	font-family: 'Roboto', sans-serif;
@@ -284,7 +284,7 @@ div#pp-calendar{
 }
 div#pp-calendar div.date{
 	width: 84%;
-	background-color: #ae875bcc;
+	background-color: #3b8afacc;
 }
 
 /* Removes the clear button from date inputs */
