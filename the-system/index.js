@@ -39,10 +39,6 @@ function handleInitData(output_){
         i++;
     }
 
-    document.getElementById('calendar').scrollLeft = 10000000;
-
-    document.getElementById('calendar').innerHTML += `<div class="date" id="calendar-add"><a onclick="showAddMeal()">+</a></div>`;
-
     let plan = output.plan;
     for(let p of plan){
         document.getElementById('mealplan').innerHTML += `
@@ -53,6 +49,12 @@ function handleInitData(output_){
         </center>
         </div>`;
     }
+
+    document.getElementById('content').style.display = "block";
+    document.getElementById('intro').style.display = "none";
+
+    document.getElementById('calendar').scrollLeft = 10000000;
+    document.getElementById('calendar').innerHTML += `<div class="date" id="calendar-add"><a onclick="showAddMeal()">+</a></div>`;
 }
 
 window.onload = function(){
@@ -62,6 +64,9 @@ window.onload = function(){
 }
 
 function loadInitData(){
+    document.getElementById('content').style.display = "";
+    document.getElementById('intro').style.display = "block";
+
     var xmlhttp = new XMLHttpRequest();
     var url = gscript + "?initdata";
 
@@ -77,7 +82,7 @@ function loadInitData(){
 
 document.getElementById('chefs').addEventListener('change', function(){
     if(document.getElementById('chefs').value > 0){
-        document.getElementById('name-of-meal').style.display = "initial";
+        document.getElementById('name-of-meal').style.display = "block";
 
         document.getElementById('ate-list').innerHTML = "";
         for(let i = 0; i < output.summary.length; i++){
@@ -91,11 +96,11 @@ document.getElementById('chefs').addEventListener('change', function(){
     }
 });
 
-document.getElementById('meal-description').addEventListener('change', function(){
-    document.getElementById('who-ate').style.display = "initial";
+document.getElementById('meal-description').addEventListener('keydown', function(){
+    document.getElementById('who-ate').style.display = "block";
 });
 
-document.getElementById("back").addEventListener('click', function(){
+document.getElementById("content").addEventListener('click', function(){
     if(canClose == "new-meal"){
         document.getElementById('add-new-meal').style.display = "";
         canClose = false;
@@ -104,6 +109,14 @@ document.getElementById("back").addEventListener('click', function(){
         canClose = false;
     }
 });
+document.getElementById('submit-meal').addEventListener("keyup", function(event){
+    console.log('event')
+    if (event.keyCode == 13) {
+        event.preventDefault();
+        event.target.blur()
+    }
+});
+
 
 let canClose = false;
 function showAddMeal(){
@@ -163,7 +176,6 @@ function personalProfile(name){
         <a class="date">${c.date}</a>
         <a class="mealname">${c.name}</a>
         <a class="mealdescription">${c.description}</a>
-        <a class="cooked">${c.cooked}</a>
         <div id="${c.date}-${c.name}-${name}" class="eaten"></a>
         </center>
         </div>`
@@ -179,6 +191,8 @@ function personalProfile(name){
     document.getElementById('pp-portions-per-meal').innerHTML = Math.round(100 * mealsCookedTotal / mealsCooked)/100;
 
     document.getElementById('personal-profile').style.display = "initial";
+    document.getElementById('pp-calendar').scrollLeft = 0;
+
     setTimeout(function(){
         canClose = "pp";
     }, 500);

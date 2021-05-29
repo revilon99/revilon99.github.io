@@ -1,66 +1,84 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <base target="_top">
-    <title>The System</title>
-	<link rel="stylesheet" type="text/css" href="styles.css">
-	<link rel="stylesheet" type="text/css" href="media.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  </head>
-  <body>
-      <div id="back">
-        <div id="content">
-          <h1>The System</h1>
-          <div id="lobby">
+    <head>
+        <base target="_top">
+        <title>The System</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="stylesheet" type="text/css" href="media.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="description" content="The System">
+		<link rel="apple-touch-icon" sizes="180x180" href="/the-system/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/the-system/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/the-system/favicon/favicon-16x16.png">
+		<link rel="manifest" href="/the-system/favicon/site.webmanifest">
+		<link rel="mask-icon" href="/the-system/favicon/safari-pinned-tab.svg" color="#000000">
+		<link rel="shortcut icon" href="/the-system/favicon/favicon.ico">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-config" content="/the-system/favicon/browserconfig.xml">
+		<meta name="theme-color" content="#000000">
+    </head>
 
-          </div>
-          <div id="calendar">
-
-          </div>
-          <h2>Cooking Next...</h2>
-          <div id="mealplan">
-
-          </div>
+    <body>
+        <div id="intro" class="content">
+            <h1>The System</h1>
+            <div id="loadingContainer"></div>
         </div>
 
-        <div id="add-new-meal">
-          <form onsubmit="return false;">
-          <center><h1>Add New Meal</h1></center>
-          <div id="what-day" style="display: initial">
-            <h2>Date</h2>
-            <input type="date" id="date-cooked" value="2020-05-04" min="2020-01-01" max="2023-12-31">
-          </div>
-          <div id="who-cooked" style="display: initial">
-            <h2>Who Cooked</h2>
-            <select id="chefs"></select>
-          </div>
-          <div id="name-of-meal">
-            <h2>Meal Name</h2>
-            <input type="text" id="meal-name" placeholder="Meal Name"/>
-            <input type="text" id="meal-description" placeholder="Meal Description"/>
-          </div>
-          </form>
-          <div id="who-ate">
-            <h2>Who Ate</h2>
-            <div id="ate-list" style="display: initial"></div>
-            <button id="submit-meal" onclick="addMeal()">Add Meal</button>
-          </div>
+        <div id="content" class="content">
+            <h1>The System</h1>
+            <div id="lobby">
+
+            </div>
+            <div id="calendar">
+
+            </div>
+            <h2>Cooking Next...</h2>
+            <div id="mealplan">
+
+            </div>
         </div>
 
-        <div id="personal-profile" style="display: none;">
-          <h1 id="pp-name"></h1>
-          <div id="pp-stats">
-              <a>Times Cooked: <a id="pp-cooked"></a></a><br>
-              <a>Meals Eaten:  <a id="pp-eaten"></a></a><br>
-              <a>Meals Cooked:  <a id="pp-cooked-total"></a></a><br>
-              <a>Average Portions Per Meal:  <a id="pp-portions-per-meal"></a></a>
-          </div>
-          <div id="pp-calendar"></div>
-        </div>
-    </div>
+        <div id="add-new-meal" class="popup">
+            <form onsubmit="return false;">
+                <center><h1>Add New Meal</h1></center>
+                <div id="what-day" style="display: initial">
+                    <h2>Date</h2>
+                    <input type="date" id="date-cooked" value="2020-05-04" min="2020-01-01" max="2023-12-31">
+                </div>
+                <div id="who-cooked" style="display: block">
+                    <h2>Who Cooked</h2>
+                    <select id="chefs"></select>
+                </div>
+                <div id="name-of-meal">
+                    <h2>Meal Name</h2>
+                    <input type="text" id="meal-name" placeholder="Meal Name"/>
+                    <input type="text" id="meal-description" placeholder="Meal Description"/>
+                    <input type="text" id="hide-keyboard" inputmode="none"/>
+                </div>
+                <div id="who-ate">
+                    <h2>Who Ate</h2>
+                    <div id="ate-list" style="display: block"></div>
 
-    <script src="index.js"></script>
-  </body>
+
+            </form>
+            <input type="submit" id="submit-meal" value="Add Meal" onclick="addMeal();"></input>
+            </div>
+        </div>
+
+        <div id="personal-profile" style="display: none;" class="popup">
+            <h1 id="pp-name"></h1>
+            <div id="pp-stats">
+                <a>Times Cooked: <a id="pp-cooked"></a></a><br>
+                <a>Meals Eaten:  <a id="pp-eaten"></a></a><br>
+                <a>Meals Cooked:  <a id="pp-cooked-total"></a></a><br>
+                <a>Average Portions Per Meal:  <a id="pp-portions-per-meal"></a></a>
+            </div>
+            <div id="pp-calendar"></div>
+        </div>
+
+        <script src="index.js"></script>
+    </body>
 </html>

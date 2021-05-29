@@ -14,16 +14,24 @@ div{
   	scrollbar-width: none;  /* Firefox */
 }
 
-div#content{
+div.content{
+	text-transform: capitalize;
 	width: 95vw;
 	max-width: 500px;
 	height: 100vh;
 	margin: 0 auto;
 	text-align: center;
+	overflow-y: auto;
 	font-family: "Arial";
 	font-size: 2em;
-	overflow-y: auto;
-	text-transform: capitalize;
+}
+div#content{
+	display: none;
+}
+div#intro{
+	background-image: url('img/loading.gif');
+	background-repeat:no-repeat;
+	background-position: center center;
 }
 
 h1{
@@ -121,14 +129,17 @@ a.mealdescription{
 }
 
 div#calendar-add a{
-	font-size: 5em;
-	margin: 51% 28% 0;
-	height: 0.65em;
+	font-size: 4.5em;
+	margin: 40% 167px 0;
+	height: 117px;
 	position: relative;
 	line-height: 0.6;
 	background-color: #7d869cab;
 }
 div#calendar-add a:active{
+	background-color: #7d869c;
+}
+div#calendar-add a:hover{
 	background-color: #7d869c;
 }
 
@@ -169,26 +180,33 @@ div.plan{
 
 div.plan a.cooked{
 	border: none;
+	font-size: 01em;
+	font-weight: 300;
+	padding-top: 12px;
 }
 div.plan a.date{
 	width: 90%;
 	border-bottom: 2px solid black;
+	font-weight: 500;
+}
+
+div.popup{
+	position: fixed;
+	top: 7vh;
+	left: 50%;
+	margin-left: calc( -1*min(440px, 90vw)/2 );
+	width: calc(min(440px, 90vw));
+	height: 86vh;
+	display: none;
 }
 
 div#add-new-meal{
-	position: fixed;
-	top: 3vh;
-	left: 50%;
-	margin-left: calc( -1*min(460px, 95vw)/2 );
-	width: calc(min(460px, 95vw));
-	height: 90vh;
 	background-color: #ccdbdf;
-	display: none;
 	text-align: center;
-	font-family:
-	'Roboto', sans-serif;
+	font-family: 'Roboto', sans-serif;
+	overflow-x: hidden;
 	overflow-y: auto;
-	padding-bottom: 20px;
+	padding-bottom: 0;
 	font-size: 0.4em;
 }
 
@@ -205,6 +223,7 @@ div#add-new-meal h2{
 	font-size: 5em;
 	line-height: 0;
 	padding-left: 5px;
+	display: block;
 }
 div#add-new-meal input[type="date"]{
 	width: 87%;
@@ -221,6 +240,14 @@ div#add-new-meal input#meal-description{
 	font-size: 4em;
 	margin: 8px auto 0px auto;
 }
+#hide-keyboard{
+	width: 0px !important;
+	height: 0px;
+	padding: 0px !important;
+	margin: 0px !important;
+	font-size: 0px !important;
+	border: none;
+}
 div#add-new-meal select{
 	width: 90%;
 	padding: 5px;
@@ -230,39 +257,33 @@ div#add-new-meal select{
 
 div#add-new-meal div{
 	display: none;
+	margin-bottom: 8px;
 }
 
 div#ate-list{
 	width: 70%;
 	text-align: left;
-	position:  relative;
-	top: 7vh;
 	text-transform: capitalize;
+	margin-top: 0;
+	padding-top: 58px;
 }
 
-button#submit-meal{
+input#submit-meal{
 	font-size: 4em;
 	background-color: #E5E8B6;
-	position: relative;
-	top: 55px;
 	padding: 10px 15px;
-	margin-bottom: 16px;
 	font-weight: 700;
+	margin-bottom: 30px;
+	border: 1px solid #d1a42a;
+	border-radius: 1px;
 }
 
 div#personal-profile{
 	text-transform: capitalize;
-	position: fixed;
-	top: 3vh;
-	left: 50%;
-	margin-left: calc( -1*min(460px, 90vw)/2 );
-	width: calc(min(460px, 90vw));
-	height: 90vh;
 	background-color: #c6d4e6;
-	display: none;
 	text-align: center;
 	font-family: 'Roboto', sans-serif;
-	overflow-y: auto;
+	overflow-y: hidden;
 	padding-bottom: 20px;
 	font-size: 1.3em;
 }
@@ -285,6 +306,11 @@ div#pp-calendar{
 div#pp-calendar div.date{
 	width: 84%;
 	background-color: #5b88c7cc;
+	height: 65%;
+}
+div#pp-calendar a.mealdescription{
+	border-bottom: 2px solid black;
+	margin-bottom: 12px;
 }
 
 /* Removes the clear button from date inputs */
@@ -325,15 +351,16 @@ input[type="date"], focus {
 /* Customize the label (the container) */
 .container {
 	display: block;
-	position: relative;
-	padding-left: 30vw;
-	margin-bottom: 12px;
+	margin-bottom: 1px;
 	cursor: pointer;
 	font-size: 4em;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	width: 100%;
+	position: relative;
+	padding-left: 50%;
 }
 
 /* Hide the browser's default checkbox */
@@ -348,10 +375,10 @@ input[type="date"], focus {
 /* Create a custom checkbox */
 .checkmark {
 	position: absolute;
-	top: 0.5vh;
-	left: 20.5vw;
-	height: 30px;
-	width: 30px;
+	top: 3px;
+	left: 25%;
+	height: 24px;
+	width: 24px;
 	background-color: #eee;
 }
 
@@ -379,12 +406,12 @@ input[type="date"], focus {
 
 /* Style the checkmark/indicator */
 .container .checkmark:after {
-	left: 1.2vh;
-	top: 0.5vh;
-	width: 1vh;
-	height: 2vh;
+	left: 7.5px;
+	top: 0.5px;
+	width: 7px;
+	height: 15px;
 	border: solid white;
-	border-width: 0 0.5vh 0.5vh 0;
+	border-width: 0 3.5px 3.5px 0;
 	-webkit-transform: rotate(45deg);
 	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
