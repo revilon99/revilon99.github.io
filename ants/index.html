@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ants</title>
+		<link rel="stylesheet" type="text/css" href="ants.css">
+	</head>
+	<body>
+		<div id="intro">
+
+		</div>
+		<canvas id="game"></canvas>
+
+		<div style="display: none" id="darken">
+             <h2>Number of Boids</h2>
+             <input type="range" min="1" max="1000" scale="1" value="750" class="slider" id="numBoids">
+             <a id="numBoids_a"></a>
+
+        </div>
+
+        <div id="playpause"></div>
+
+		<script src="Graph.js"></script>
+		<script src="Terrain.js"></script>
+		<script src="Ant.js"></script>
+		<script src="ants.js"></script>
+		<script>
+			window.onload = init;
+		</script>
+	</body>
+</html>
