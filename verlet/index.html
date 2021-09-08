@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Verlet Rope - oli.casa</title>
+        <style>
+            html, body{
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            canvas#verlet{
+                width: 100vw;
+                height: 100vh;
+                background-color: black;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="verlet"></canvas>
+
+        <script src="Verlet.js"></script>
+        <script src="Vector.js"></script>
+        <script src="Dot.js"></script>
+        <script src="Stick.js"></script>
+        <script src="Entity.js"></script>
+        <script src="Shapes.js"></script>
+        <script>
+            let verlet = new Verlet(document.getElementById('verlet'), 50);
+            verlet.addEntity(new Cloth(200, 50, 40, 80, 15, 100));
+            verlet.entities[0].push(-10);
+
+            window.onload = function(){
+                requestAnimationFrame(tick);
+            }
+
+            function tick(){
+                requestAnimationFrame(tick);
+
+                if(verlet.ready) verlet.tick();
+            }
+        </script>
+    </body>
+</html>
