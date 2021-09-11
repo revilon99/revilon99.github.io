@@ -38,24 +38,4 @@ class Cloth extends Entity{
             if(Math.floor(i / columns) < rows) this.addStick(i, i + columns);
         }
     }
-
-    push(factor){
-        for(let d of this.dots){
-            if(d.fixed) continue;
-            d.pos.add(new Vector(factor, 0));
-        }
-    }
-
-    mouse(mouse){
-        for(let d of this.dots){
-            if(d.fixed) continue;
-            let mouseVec = Vector.sub(d.pos, mouse);
-            let distSq = mouseVec.magSq();
-            distSq = distSq;
-            if(distSq < 100) distSq = 100;
-            if(distSq > 4000) distSq = 10000000;
-            mouseVec.mult(1000/distSq);
-            d.pos.add(mouseVec);
-        }
-    }
 }

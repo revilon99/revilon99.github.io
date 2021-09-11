@@ -15,6 +15,7 @@ class Dot{
         this.gravity = new Vector(0, 1);
 
         this.radius = 3;
+        this.radiusHighlight = 5;
         this.color = '#fff';
         this.mass = 1;
 
@@ -47,10 +48,56 @@ class Dot{
         if(this.pos.y < this.radius)     this.pos.y = this.radius;
     }
 
-    render(ctx){
+    render(ctx, verlet){
         ctx.beginPath();
         ctx.fillStyle = this.color;
-        ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2);
+
+        let mouseCollision = false;
+        let rad = this.radius;
+
+        let radH = this.radiusHighlight;
+
+        if(verlet.mousedown) radH *= 2
+
+        if(verlet.state > 1) mouseCollision = (
+           verlet.mouse.x > this.pos.x - radH &&
+           verlet.mouse.x < this.pos.x + radH &&
+           verlet.mouse.y > this.pos.y - radH &&
+           verlet.mouse.y < this.pos.y + radH);
+
+
+        switch (verlet.state) {
+            case 3:
+                if(mouseCollision){
+                    verlet.canvas.style.cursor = "pointer";
+                    rad = this.radiusHighlight;
+                    ctx.fillStyle = "red";
+
+                }
+                break;
+
+            case 4:
+                if(mouseCollision){
+                    verlet.canvas.style.cursor = "pointer";
+                    rad = this.radiusHighlight;
+                    ctx.fillStyle = "blue";
+                }
+                if(verlet.connectionTemp == this){
+                    ctx.fillStyle = "blue";
+                }
+                break;
+
+            case 6:
+                if(mouseCollision){
+                    verlet.canvas.style.cursor = "pointer";
+                    rad = this.radiusHighlight;
+                }
+                if(this.fixed) ctx.fillStyle = "red";
+
+                break;
+        }
+
+        ctx.arc(this.pos.x, this.pos.y, rad, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }

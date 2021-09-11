@@ -21,15 +21,20 @@
         <canvas id="verlet"></canvas>
 
         <script src="Verlet.js"></script>
+        <script src="UI.js"></script>
         <script src="Vector.js"></script>
         <script src="Dot.js"></script>
         <script src="Stick.js"></script>
         <script src="Entity.js"></script>
         <script src="Shapes.js"></script>
         <script>
-            let verlet = new Verlet(document.getElementById('verlet'), 50);
-            verlet.addEntity(new Cloth(200, 50, 40, 80, 15, 100));
-            verlet.entities[0].push(-10);
+            let verlet = new Verlet(document.getElementById('verlet'));
+
+            /*
+            let cloth = new Cloth(200, 50, 40, 80, 15, 100)
+            verlet.addEntity(cloth);
+            cloth.push(-10);
+            */
 
             window.onload = function(){
                 requestAnimationFrame(tick);

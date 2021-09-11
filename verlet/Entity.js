@@ -7,6 +7,7 @@
 class Entity{
     dots = [];
     sticks = [];
+    verlet;
 
     constructor(iterations=100){
         this.iterations = iterations;
@@ -21,6 +22,10 @@ class Entity{
         this.sticks.push(new Stick(this.dots[p1], this.dots[p2], length));
     }
 
+    addStickObj(p1, p2){
+        this.sticks.push(new Stick(p1, p2, length));
+    }
+
     tick(w, h){
         for(let d of this.dots) d.tick(w, h);
 
@@ -30,8 +35,29 @@ class Entity{
         }
     }
 
-    render(ctx){
-        for(let d of this.dots) d.render(ctx);
-        for(let s of this.sticks) s.render(ctx);
+    render(ctx, verlet){
+        for(let s of this.sticks) s.render(ctx, verlet);
+        for(let d of this.dots) d.render(ctx, verlet);
+
+    }
+
+    push(factor){
+        for(let d of this.dots){
+            if(d.fixed) continue;
+            d.pos.add(new Vector(factor, 0));
+        }
+    }
+
+    mouse(mouse){
+        for(let d of this.dots){
+            if(d.fixed) continue;
+            let mouseVec = Vector.sub(d.pos, mouse);
+            let distSq = mouseVec.magSq();
+            distSq = distSq;
+            if(distSq < 500) distSq = 500;
+            if(distSq > 4000) distSq = 10000000;
+            mouseVec.mult(1000/distSq);
+            d.pos.add(mouseVec);
+        }
     }
 }

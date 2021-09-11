@@ -10,6 +10,8 @@ class Stick{
         this.endPoint = p2;
         this.stiffness = 1;
         this.color = "#fff";
+        this.width = 1;
+        this.highlightWidth = 2;
 
         if(!length) this.length = this.startPoint.pos.dist(this.endPoint.pos);
         else this.length = length;
@@ -40,9 +42,42 @@ class Stick{
         }
     }
 
-    render(ctx) {
+    render(ctx, verlet) {
         ctx.beginPath();
         ctx.strokeStyle = this.color;
+
+
+        let mouseCollision = false;
+        let width = this.width;
+
+        if(verlet.state > 1) {
+            let left, right, up, down;
+            if(this.startPoint.pos.x < this.endPoint.pos.x) {left = this.startPoint; right = this.endPoint}
+            else {left = this.endPoint; right = this.startPoint};
+            if(this.startPoint.pos.y < this.endPoint.pos.y) {up = this.startPoint; down = this.endPoint}
+            else {up = this.endPoint; down = this.startPoint};
+
+            // not the best collision function for a line but whatever..
+            mouseCollision = (
+               verlet.mouse.x > left.pos.x &&
+               verlet.mouse.x < right.pos.x &&
+               verlet.mouse.y > up.pos.y - this.highlightWidth &&
+               verlet.mouse.y < down.pos.y + this.highlightWidth);
+       }
+
+
+        switch (verlet.state) {
+            case 5:
+                if(mouseCollision){
+                    verlet.canvas.style.cursor = "pointer";
+                    width = this.highlightWidth;
+                    ctx.strokeStyle = "red";
+
+                }
+                break;
+        }
+
+        ctx.lineWidth = width;
         ctx.moveTo(this.startPoint.pos.x, this.startPoint.pos.y);
         ctx.lineTo(this.endPoint.pos.x, this.endPoint.pos.y);
         ctx.stroke();
