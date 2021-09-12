@@ -5,13 +5,16 @@
 */
 
 class Stick{
+    static WIDTH = 2;
+    static HIGHLIGHTWIDTH = 4;
+
     constructor(p1, p2, length){
         this.startPoint = p1;
         this.endPoint = p2;
-        this.stiffness = 1;
+        this.stiffness = 1.0;
         this.color = "#fff";
-        this.width = 1;
-        this.highlightWidth = 2;
+        this.width = Stick.WIDTH;
+        this.highlightWidth = Stick.HIGHLIGHTWIDTH;
 
         if(!length) this.length = this.startPoint.pos.dist(this.endPoint.pos);
         else this.length = length;
@@ -77,10 +80,14 @@ class Stick{
                 break;
         }
 
-        ctx.lineWidth = width;
+        ctx.lineWidth = width*verlet.scale;
         ctx.moveTo(this.startPoint.pos.x, this.startPoint.pos.y);
         ctx.lineTo(this.endPoint.pos.x, this.endPoint.pos.y);
         ctx.stroke();
         ctx.closePath();
+    }
+
+    refreshLength(){
+        this.length = this.startPoint.pos.dist(this.endPoint.pos);
     }
 }

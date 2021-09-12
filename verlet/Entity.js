@@ -26,8 +26,8 @@ class Entity{
         this.sticks.push(new Stick(p1, p2, length));
     }
 
-    tick(w, h){
-        for(let d of this.dots) d.tick(w, h);
+    tick(w, h, gravity){
+        for(let d of this.dots) d.tick(w, h, gravity);
 
         for(let i = 0; i < this.iterations; i++){
             for(let d of this.dots) d.constrain(w, h);
@@ -54,9 +54,9 @@ class Entity{
             let mouseVec = Vector.sub(d.pos, mouse);
             let distSq = mouseVec.magSq();
             distSq = distSq;
-            if(distSq < 500) distSq = 500;
+            if(distSq < 2000) distSq = 2000;
             if(distSq > 4000) distSq = 10000000;
-            mouseVec.mult(1000/distSq);
+            mouseVec.mult(500/distSq);
             d.pos.add(mouseVec);
         }
     }

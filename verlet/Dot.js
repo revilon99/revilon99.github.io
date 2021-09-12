@@ -5,24 +5,25 @@
 */
 
 class Dot{
+    static RADIUS = 3;
+    static RADIUSHIGHLIGHT = 5;
+
     constructor(x, y, velX=0, velY=0, fixed=false){
         this.pos = new Vector(x, y);
         this.oldPos = new Vector(x - velX, y - velY);
 
-        this.friction = 0.97;
+        this.friction = 1.0;
         this.groundFriction = 0.7;
 
-        this.gravity = new Vector(0, 1);
-
-        this.radius = 3;
-        this.radiusHighlight = 5;
+        this.radius = Dot.RADIUS;
+        this.radiusHighlight = Dot.RADIUSHIGHLIGHT;
         this.color = '#fff';
         this.mass = 1;
 
         this.fixed = fixed;
     }
 
-    tick(w, h){
+    tick(w, h, gravity){
         if(this.fixed) return;
         let vel = Vector.sub(this.pos, this.oldPos);
         vel.mult(this.friction);
@@ -37,8 +38,8 @@ class Dot{
         this.oldPos.x = this.pos.x;
         this.oldPos.y = this.pos.y;
 
-        this.pos.add(vel);
-        this.pos.add(this.gravity);
+        if(!Number.isNaN(vel.x) && !Number.isNaN(vel.y)) this.pos.add(vel);
+        if(!Number.isNaN(gravity.x) && !Number.isNaN(gravity.y)) this.pos.add(gravity);
     }
 
     constrain(w, h){
@@ -97,7 +98,7 @@ class Dot{
                 break;
         }
 
-        ctx.arc(this.pos.x, this.pos.y, rad, 0, Math.PI * 2);
+        ctx.arc(this.pos.x, this.pos.y, rad*verlet.scale, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
     }

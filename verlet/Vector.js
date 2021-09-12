@@ -38,4 +38,9 @@ class Vector{
     mag(){
         return Math.sqrt(this.magSq());
     }
+
+    normalise(){
+        let mag = this.mag();
+        this.mult(1 / mag);
+    }
 }

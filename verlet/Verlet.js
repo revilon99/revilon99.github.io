@@ -11,8 +11,16 @@
 class Verlet{
     entities = [];
     connectionTemp = null;
+    draggingTemp = null;
+    dragRadius = 10;
+
+    scale = 1.0;
 
     state = 0;
+    ready = false;
+
+    gravity = new Vector(0, 1);
+    accelerationGravity = false;
     /*
     states:
         0 - running
@@ -28,10 +36,34 @@ class Verlet{
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
 
-        this.entities.push(new Entity(400)); //default user entity
+        this.entities.push(new Entity(1000)); //default user entity
 
-        this.ui = new UI(this);
         let verlet = this;
+
+        let centerRad = 3;
+        let centerDist = 50;
+        let defaultRad = 10;
+        let highlightRad = 15;
+        if(UI.isMobile()) {
+            this.scale = 2;
+            centerDist /= 1.5;
+            defaultRad /= 1.5;
+            highlightRad /= 1.5;
+            window.addEventListener("devicemotion", function(e){
+                if(verlet.accelerationGravity){
+                    let x = e.accelerationIncludingGravity.x, y = e.accelerationIncludingGravity.y;
+
+                    x = -x / 8;
+                    //if(y < 0) y = 0;
+
+                    verlet.gravity = new Vector(x, y);
+                    verlet.gravity.normalise();
+                }
+            }, true);
+
+        }
+        this.ui = new UI(this, centerRad, centerDist, defaultRad, highlightRad);
+
         this.ui.addButton("Add Dot", function(){
             verlet.state = 2;
         });
@@ -48,6 +80,13 @@ class Verlet{
         this.ui.addButton("Toggle Fix", function(){
             verlet.state = 6;
         });
+        if(UI.isMobile()) {
+            this.ui.addButton("Toggle Gravity", function(){
+                verlet.accelerationGravity = !verlet.accelerationGravity;
+                verlet.gravity = new Vector(0, 1);
+                verlet.state = 0;
+            });
+        }
         this.ui.addButton("Resume", function(){
             verlet.state = 0;
         });
@@ -62,15 +101,31 @@ class Verlet{
 
     tick(){
         let w = this.canvas.width, h = this.canvas.height;
-        verlet.canvas.style.cursor = "default"
+        this.canvas.style.cursor = "default"
         switch(this.state){
+            case 0:
+            case 1:
+                if(this.draggingTemp != null) {
+                    this.canvas.style.cursor = "grabbing";
+                    this.draggingTemp.pos.x = this.mouse.x;
+                    this.draggingTemp.pos.y = this.mouse.y;
+                    if(this.state == 1){
+                        this.draggingTemp.oldPos.x  = this.mouse.x;
+                        this.draggingTemp.oldPos.y  = this.mouse.y;
+                        for(let e of this.entities){
+                            for(let s of e.sticks){
+                                if(s.startPoint == this.draggingTemp || s.endPoint == this.draggingTemp) s.refreshLength();
+                            }
+                        }
+                    }
+                }
+                break;
             case 2:
-                if(!this.ui.showMenu) verlet.canvas.style.cursor = "pointer";
+                if(!this.ui.showMenu) this.canvas.style.cursor = "pointer";
                 break;
         }
 
-        if(this.state == 0) for(let e of this.entities) e.tick(w, h);
-
+        if(this.state == 0) for(let e of this.entities) e.tick(w, h, this.gravity);
         this.render(w, h);
     }
 
@@ -81,9 +136,10 @@ class Verlet{
 
         switch(this.state){
             case 2:
+                if(UI.isMobile()) break;
                 ctx.beginPath();
                 ctx.fillStyle = "white";
-                ctx.arc(this.mouse.x, this.mouse.y, 3, 0, Math.PI * 2);
+                ctx.arc(this.mouse.x, this.mouse.y, Dot.RADIUS*this.scale, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.closePath();
                 break;
@@ -92,7 +148,7 @@ class Verlet{
                 if(this.connectionTemp){
                     ctx.beginPath();
                     ctx.strokeStyle = "white";
-                    ctx.lineWidth = 2;
+                    ctx.lineWidth = Stick.WIDTH*this.scale;
                     ctx.moveTo(this.connectionTemp.pos.x, this.connectionTemp.pos.y);
                     ctx.lineTo(this.mouse.x, this.mouse.y);
                     ctx.stroke();
@@ -132,7 +188,7 @@ class Verlet{
                 for(let e of verlet.entities){
                     for(let i = 0; i < e.dots.length; i++){
                         let d = e.dots[i];
-                        let radH = d.radiusHighlight;
+                        let radH = d.radiusHighlight*verlet.scale;
                         if(verlet.mousedown) radH *= 2
                         if( mouse.x > d.pos.x - radH &&
                             mouse.x < d.pos.x + radH &&
@@ -155,15 +211,18 @@ class Verlet{
                 for(let e of verlet.entities){
                     for(let i = 0; i < e.dots.length; i++){
                         let d = e.dots[i];
-                        if( mouse.x > d.pos.x - d.radiusHighlight &&
-                            mouse.x < d.pos.x + d.radiusHighlight &&
-                            mouse.y > d.pos.y - d.radiusHighlight &&
-                            mouse.y < d.pos.y + d.radiusHighlight) {
+                        let rad = (d.radiusHighlight + verlet.dragRadius) * verlet.scale;
+                        if( mouse.x > d.pos.x - rad &&
+                            mouse.x < d.pos.x + rad &&
+                            mouse.y > d.pos.y - rad &&
+                            mouse.y < d.pos.y + rad) {
                                 if(verlet.connectionTemp){
                                     e.addStickObj(verlet.connectionTemp, d);
 
                                     verlet.connectionTemp = null;
                                 }else verlet.connectionTemp = d;
+
+                                break;
                             }
                     }
                 }
@@ -180,7 +239,7 @@ class Verlet{
                         else {up = s.endPoint; down = s.startPoint};
 
                         // not the best collision function for a line but whatever..
-                        let radH = s.highlightWidth;
+                        let radH = s.highlightWidth*verlet.scale;
                         if(verlet.mousedown) radH *= 2
                         if(mouse.x > left.pos.x &&
                            mouse.x < right.pos.x &&
@@ -196,7 +255,7 @@ class Verlet{
                 for(let e of verlet.entities){
                     for(let i = 0; i < e.dots.length; i++){
                         let d = e.dots[i];
-                        let radH = d.radiusHighlight;
+                        let radH = d.radiusHighlight*verlet.scale;
                         if(verlet.mousedown) radH *= 2
                         if( mouse.x > d.pos.x - radH &&
                             mouse.x < d.pos.x + radH &&
@@ -210,14 +269,10 @@ class Verlet{
             break;
         }
     }
-    unclick(mouse, verlet){
-        switch(verlet.state){
+    unclick(mouse, verlet, state){
+        switch(state){
             case 0:
                 //ignore
-                break;
-
-            case 1:
-                //menu
                 break;
 
             case 2:
@@ -234,7 +289,29 @@ class Verlet{
         if(verlet.mousedown){
             switch(verlet.state){
                 case 0:
-                    for(let en of verlet.entities) en.mouse(mouse);
+                case 1:
+                    if(verlet.draggingTemp == null){
+                        let dot = null;
+                        for(let e of verlet.entities){
+                            for(let i = 0; i < e.dots.length && dot == null; i++){
+                                let d = e.dots[i];
+                                let rad = (d.radiusHighlight + verlet.dragRadius)*verlet.scale;
+                                if( mouse.x > d.pos.x - rad &&
+                                    mouse.x < d.pos.x + rad &&
+                                    mouse.y > d.pos.y - rad &&
+                                    mouse.y < d.pos.y + rad) {
+                                        dot = d;
+                                    }
+                            }
+                        }
+
+                        if(dot == null && verlet.state == 0) for(let en of verlet.entities) en.mouse(mouse);
+                        else {
+                            verlet.draggingTemp = dot;
+                        }
+                    }else{
+                        //do nothing
+                    }
                     break;
 
                 case 3:
@@ -245,6 +322,22 @@ class Verlet{
             }
         }else{
 
+        }
+    }
+
+    mousedownEvt(verlet, mouse){
+        verlet.mousedown = true;
+        if(verlet.state == 4 && verlet.connectionTemp == null && mouse != undefined){
+            verlet.mouse = mouse;
+            verlet.click(mouse, verlet);
+        }
+    }
+    mouseupEvt(verlet, mouse){
+        verlet.mousedown = false;
+        verlet.draggingTemp = null;
+        if(verlet.state == 4 && verlet.connectionTemp != null && mouse != undefined){
+            verlet.click(mouse, verlet);
+            verlet.connectionTemp = null
         }
     }
 }
