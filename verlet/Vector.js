@@ -43,4 +43,8 @@ class Vector{
         let mag = this.mag();
         this.mult(1 / mag);
     }
+
+    isNaN(){
+        return (Number.isNaN(this.x) || Number.isNaN(this.y))
+    }
 }

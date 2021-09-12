@@ -11,6 +11,8 @@ class Dot{
     constructor(x, y, velX=0, velY=0, fixed=false){
         this.pos = new Vector(x, y);
         this.oldPos = new Vector(x - velX, y - velY);
+        this.safePos = this.pos;
+        this.safeOldPos = this.oldPos;
 
         this.friction = 1.0;
         this.groundFriction = 0.7;
@@ -40,6 +42,12 @@ class Dot{
 
         if(!Number.isNaN(vel.x) && !Number.isNaN(vel.y)) this.pos.add(vel);
         if(!Number.isNaN(gravity.x) && !Number.isNaN(gravity.y)) this.pos.add(gravity);
+
+        if(this.pos.isNaN()) this.pos = this.safePos;
+        else this.safePos = this.pos;
+
+        if(this.oldPos.isNaN()) this.oldPos = this.safeOldPos;
+        else this.safeOldPos = this.oldPos;
     }
 
     constrain(w, h){

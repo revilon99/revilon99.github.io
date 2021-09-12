@@ -35,11 +35,11 @@ class Stick{
         let m2 = this.startPoint.mass / m1;
         m1 = this.endPoint.mass / m1;
 
-        if(!this.startPoint.fixed){
+        if(!this.startPoint.fixed && !Number.isNaN(offsetX * m1) && !Number.isNaN(offsetY * m1)){
             this.startPoint.pos.x -= offsetX * m1;
             this.startPoint.pos.y -= offsetY * m1;
         }
-        if(!this.endPoint.fixed){
+        if(!this.endPoint.fixed && !Number.isNaN(offsetX * m2) && !Number.isNaN(offsetY * m2)){
             this.endPoint.pos.x += offsetX * m2;
             this.endPoint.pos.y += offsetY * m2;
         }
