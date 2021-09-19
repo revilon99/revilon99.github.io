@@ -30,13 +30,34 @@
         <canvas id="game"></canvas>
 
         <div style="display: none" id="darken">
-                      
+
         </div>
 
         <div id="playpause"></div>
-        
-        <script src="canvas.js"></script>
+
         <script src="/libraries/Collision.js"></script>
-        <script src="balls.js"></script>
+        <script src="Pong.js"></script>
+        <script src="Ball.js"></script>
+        <script>
+            let pongGame = new Pong(document.getElementById("game"));
+
+            requestAnimationFrame(tick);
+            function tick(){
+                requestAnimationFrame(tick);
+
+                pongGame.tick();
+            }
+
+            document.getElementById('playpause').addEventListener('click', function(e){
+                pongGame.running = !pongGame.running;
+                if(pongGame.running) {
+                    e.target.classList.remove('paused');
+                    document.getElementById('darken').style.display = "none";
+                }else{
+                    e.target.classList.add('paused');
+                    document.getElementById('darken').style.display = "initial";
+                }
+            }, false);
+        </script>
     </body>
 </html>
