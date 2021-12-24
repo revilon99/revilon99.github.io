@@ -14,27 +14,28 @@
 
 		  gtag('config', 'UA-167457066-1');
 		</script>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
     </head>
     <body>
         <div id="content">
-            <h1>Oli Cass's Website</h1>
-            <h3>A collection of little projects all in HTML5</h3>
+            <h1>oli.casa</h1>
             <h2>Contact</h2>
-            Email Me:<br> <a id="email" href="mailto:olicass99@gmail.com">olicass99@gmail.com</a><br><br>
-            Check out the Github:<br> <a target="_blank" href="https://www.github.com/revilon99/revilon99.github.io">https://www.github.com/revilon99/revilon99.github.io</a>
+            <div id="contact">
+                <div class="contact">Email Me: <br> <a id="email" href="mailto:olicass99@gmail.com">olicass99@gmail.com</a></div>
+                <div style="float: right" class="contact">Check out the Github: <br> <a target="_blank" href="https://www.github.com/revilon99/revilon99.github.io">https://www.github.com/revilon99/revilon99.github.io</a></div>
+            </div>
             <h2>Projects</h2>
             <div id="projects">
-                <a target="_blank" href="/pong">Pong</a>
-                <a target="_blank" href="/pong-music">Pong with Music</a>
-                <a target="_blank" href="https://github.com/revilon99/revilon99.github.io/blob/master/pong-music/youtube.min.js">Pong with Music for YouTube</a>
-                <a target="_blank" href="/boids">Boids</a>
-                <a target="_blank" href="/boidsVR">BoidsVR</a>
+
             </div>
-            <h2>Demos</h2>
-            <div id="demos">
-                <a target="_blank" href="/demos/music_visulization">Music Visulization</a>
-                <a target="_blank" href="/demos/music-color-sync">Music Color Sync</a>
-            </div>
-            <script src="script.js"></script>
+            <script src="index.js"></script>
+            <script>
+                window.onload = function(){
+                    load_projects();
+                }
+            </script>
     </body>
 </html>

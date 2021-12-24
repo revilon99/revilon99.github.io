@@ -1,0 +1,69 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>RigPlanner</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    <body>
+        <div id="header">
+            <h1>RigPlanner</h1>
+        </div>
+
+        <div id ="content">
+            <div id="calendar">
+
+            </div>
+            <div id="addButton" onclick="addJob()">
+                <a>+</a>
+            </div>
+        </div>
+
+        <div id="jobBuilder" style="display: none">
+            <h2>New Job</h2>
+            <form id="newJob" onsubmit="submitNewJob(); return false;">
+                <a>Name</a>
+                <input name="jobName" type="text" id="name"></input>
+                <a>Type</a>
+                <select name="jobType" id="jobType">
+                    <option>--Choose A Job Type--</option>
+                    <option>Hot Soak</option>
+                    <option>Cold Soak</option>
+                    <option>Thermal Cycle</option>
+                    <option>Salt Corrosion</option>
+                    <option>Pressure Pulse</option>
+                </select>
+
+                <div id="jobTimeContainer" style="display: none">
+                    <a>Time (Hours)</a>
+                    <input type="number" name="jobTime" id="jobTime"></input>
+                </div>
+                <div id="jobCyclesContainer" style="display: none">
+                    <a>Frequency (Hz)</a>
+                    <input type="number" name="jobFrequency" id="jobFrequency"></input>
+                    <a>Cycles</a>
+                    <input type="number" name="jobCycles" id="jobCycles"></input>
+                </div>
+
+
+
+                <div id="startEndContainer" style="display: none">
+                    <a>Job Length:</a>
+                    <a id="jobLength"></a>
+
+                    <a>Start</a>
+                    <input type="datetime-local" name="jobStart" id="jobStart"></input>
+
+                    <a>End</a>
+                    <input type="datetime-local" name="jobEnd" id="jobEnd"></input>
+
+                    <input type="submit"></input>
+                </div>
+            </form>
+        </div>
+
+        <script src="index.js"></script>
+        <script>
+            window.onload = init;
+        </script>
+    </body>
+</html>

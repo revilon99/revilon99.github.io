@@ -1,0 +1,129 @@
+/*
+RigPlanner/styles.css
+*/
+
+html, body{
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+div#content{
+    position: relative;
+}
+
+div#calendar{
+    display: block;
+    padding: 10vh 0 50vh;
+    height: 20000px;
+    background-color: #03c6e570;
+}
+div.date{
+    position: relative;
+    width: calc(72vw / 7);
+    height: calc(72vw / 7);
+    margin: 1vw;
+    padding: 1vw;
+    float: left;
+    text-align: center;
+    background-color: #fff;
+    font-family: "Arial";
+    font-size: 4em;
+}
+div.date a{
+    position: relative;
+    top: 0.2em;
+}
+div.today{
+    background-color: #8facff;
+}
+div.blank{
+    background-color: initial;
+}
+div.weekend{
+    background-color: #e1e1e1;
+}
+
+div.monthBreak{
+    padding: 2vw 5vw;
+    width: 100vw;
+    display: inline-block;
+    font-family: "Arial";
+    font-size: 5em;
+}
+
+div#header{
+    position: fixed;
+    height: 10vh;
+    width: 100vw;
+    left: 0;
+    top: 0;
+    background-color: #2196F3;
+    z-index: 1;
+    text-align: center;
+}
+h1{
+    position: relative;
+    font-family: "Arial";
+    font-size: 9em;
+    color: #ffffff;
+    top: -0.7em;
+}
+
+div#addButton{
+    position: fixed;
+    width: 20vw;
+    height: 20vw;
+    background-color: #ffc00f;
+    right: 5vw;
+    bottom: 5vw;
+    border: 3px solid black;
+    border-radius: 20vw;
+    color: white;
+    font-family: "Arial";
+    font-size: 17em;
+    text-align: center;
+}
+div#addButton a{
+    position: relative;
+    top: -0.2em
+}
+
+
+div#jobBuilder{
+    position: fixed;
+    width: 94vw;
+    height: calc(100vh - 6vw);
+    z-index: 3;
+    background-color: #b4b4b4;
+    top: 3vw;
+    left: 3vw;
+    font-size: 4em;
+    font-family: "Arial";
+}
+h2{
+    text-align: center;
+}
+form#newJob{
+    width: 80%;
+    margin: auto;
+}
+
+form#newJob input{
+    font-size: 1em;
+    font-family: "Arial";
+    width: 100%;
+    margin-bottom: 3vh;
+}
+
+form#newJob select{
+    font-size: 1em;
+    font-family: "Arial";
+    width: 100%;
+    margin-bottom: 3vh;
+}
+
+
+form#newJob a{
+    display: block;
+}
