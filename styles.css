@@ -12,6 +12,7 @@ div#content{
     top: 0;
     left: 0;
     width: 100vw;
+    min-height: 100%;
     margin: auto;
     background-image : linear-gradient(to right, 
                     rgba(255,255,255, 0), 
@@ -97,4 +98,52 @@ div.project img{
 
 div.project a{
     font-size: 2em
+}
+
+@media only screen and (max-width: 450px){
+    div#content{
+            background-image : none;
+            background-color: rgba(73, 151, 215, 1);
+    }
+
+    h1, h2, h3{
+        margin: 0px;
+    }
+     h1{
+        margin-top: 20px;
+    }
+    div#contact{
+        width: 70%;
+    }
+    div#contact div.contact{
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    h2{
+        font-size: 2em;
+    }
+
+    div.project{
+        width: 22vw;
+    }
+
+    div.project div{
+        width: 22vw;
+        height: 22vw;
+
+    }
+    div.project div:hover{
+        width: 22vw;
+        height: 22vw;
+        padding: 0.5vw 0.5vw;
+
+        cursor: initial;
+    }
+
+    div.project a{
+        font-size: 1.3em
+    }
+
+
 }
