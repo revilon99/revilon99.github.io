@@ -1,0 +1,50 @@
+
+/*
+Phones
+*/
+@media only screen and (max-width: 450px){
+    div#personal-profile h1 {
+        font-size: 2.4em;
+    }
+    div#calendar-add a{
+font-size: 5em;
+height: 132px;
+margin: 50% 30%;
+    }
+    div.plan a.cooked {
+        font-size: 0.7em;
+    }
+    div#mealplan{
+        margin-bottom: 50px;
+    }
+    div.popup{
+        top: 4vh;
+        height: 82vh;
+    }
+}
+
+@media only screen and (max-width: 374px){
+    div#content{
+        font-size: 1.7em;
+    }
+    div#personal-profile h1 {
+        font-size: 2em;
+    }
+}
+
+@media only screen and (max-width: 319px){
+    div#content{
+        font-size: 1.7em;
+    }
+}
+
+/*
+Tablets
+*/
+@media only screen and (min-height: 1000px){
+
+}
+
+@media only screen and (min-height: 1000px) and (max-width: 800px){
+
+}

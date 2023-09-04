@@ -4,15 +4,15 @@ let canClose = false;
 
 let output;
 function handleInitData(output_){
-	// Set Global Output Variable
+    // Set Global Output Variable
     output = output_;
 	
 	/*
 		04/09/2023 UPDATE:
-		Capped as hack to make mj edition
+		Capped as hack to make changes
 	*/
-	output.summary  = output.summary.slice(0, 10);
-	output.calendar = output.calendar.slice(0, 63);
+	output.summary  = output.summary.slice(10, output.summary.length);
+	output.calendar = output.calendar.slice(63, output.calendar.length);
 	/*
 		End of Hack
 	*/
@@ -154,7 +154,11 @@ document.getElementById("content").addEventListener('click', function(){
     }
 });
 
+let addMealTimeout = false;
+
 function addMeal(){
+	if(addMealTimeout) return;
+	
     // Turn input data into object
     let m = {};
     m.date = document.getElementById('date-cooked').value;
@@ -180,6 +184,9 @@ function addMeal(){
     }
     xmlhttp.open('GET', gscript + param, true);
     xmlhttp.send();
+	
+	addMealTimeout = true;
+	setTimeout(function(){addMealTimeout = false;}, 3000);
 }
 
 /*

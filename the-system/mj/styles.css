@@ -1,0 +1,460 @@
+/*
+The System/styles.css
+Oliver Cass (c) 2021
+All Rights Reserved
+*/
+
+/*
+	Elements
+*/
+
+html, body{
+	padding: 0;
+	margin: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+
+}
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+@media only screen and (max-width: 450px){
+	div::-webkit-scrollbar {
+	  display: none;
+	}
+	div{
+		-ms-overflow-style: none;  /* IE and Edge */
+	  	scrollbar-width: none;  /* Firefox */
+	}
+	div#mealplan{
+		height: 15vh;
+	}
+}
+@media only screen and (min-height: 1000px){
+	div::-webkit-scrollbar {
+	  display: none;
+	}
+	div{
+		-ms-overflow-style: none;  /* IE and Edge */
+	  	scrollbar-width: none;  /* Firefox */
+	}
+	div#mealplan{
+		height: 15vh;
+	}
+}
+
+h1{
+	font-size: 1.8em;
+	line-height: 0;
+	padding-top: 2vh;
+}
+h2{
+	font-family: 'Roboto', sans-serif;
+	font-size: 1.2em;
+	float: left;
+	line-height: 0;
+	margin-left: 12px;
+}
+
+/*
+	Content Styles
+*/
+
+div.content{
+	text-transform: capitalize;
+	width: 95vw;
+	max-width: 500px;
+	height: 100vh;
+	margin: 0 auto;
+	text-align: center;
+	overflow-y: auto;
+	font-family: "Arial";
+	font-size: 2em;
+}
+div.box{
+	display: inline-block;
+	white-space: normal;
+	height: 100%;
+	width: 80%;
+	padding: 20px;
+	margin: 5px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	font-family: 'Roboto', sans-serif;
+	--corner-size: 3px;
+	background:
+	  linear-gradient(to right, black var(--corner-size), transparent var(--corner-size)) 0 0,
+	  linear-gradient(to right, black var(--corner-size), transparent var(--corner-size)) 0 100%,
+	  linear-gradient(to left, black var(--corner-size), transparent var(--corner-size)) 100% 0,
+	  linear-gradient(to left, black var(--corner-size), transparent var(--corner-size)) 100% 100%,
+	  linear-gradient(to bottom, black var(--corner-size), transparent var(--corner-size)) 0 0,
+	  linear-gradient(to bottom, black var(--corner-size), transparent var(--corner-size)) 100% 0,
+	  linear-gradient(to top, black var(--corner-size), transparent var(--corner-size)) 0 100%,
+	  linear-gradient(to top, black var(--corner-size), transparent var(--corner-size)) 100% 100%;
+	background-repeat: no-repeat;
+	background-size: 60px 60px;
+}
+div#content{
+	display: none;
+}
+div#intro{
+	background-image: url('img/loading.gif');
+	background-repeat:no-repeat;
+	background-position: center center;
+}
+
+/*
+	Lobby
+*/
+
+div#lobby{
+	width: 95%;
+	margin: 0 auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 5px;
+}
+
+div.member{
+	width: 95%;
+	background-color: #a3b6e6;
+	float: left;
+	margin: 3px;
+	padding: 5px;
+}
+a.name{
+	float: left;
+}
+a.owed{
+	float: right;
+	margin-right: 10px;
+}
+
+/*
+	Calendar
+*/
+
+div#calendar{
+	height: 70vh;
+	width: 100%;
+	margin: auto;
+	overflow-y: hidden;
+	overflow-x: auto;
+	white-space: nowrap;
+	padding-bottom: 49px;
+	font-size: 1.3em;
+}
+div.date{
+	background-color: #3f93b6cc;
+}
+div.date a{
+	display: block;
+}
+div.plan a{
+	display: block;
+}
+a.date{
+  font-size: 0.8em;
+  font-weight: 700;
+}
+a.cooked{
+	width: 90%;
+	border-bottom: 2px solid black;
+	font-weight: 600;
+}
+a.mealdescription{
+	font-size: 0.55em;
+}
+
+/*
+	Calendar Add
+*/
+
+div#calendar-add a{
+	font-size: 4.5em;
+	margin: 40% 36% 0;
+	height: 117px;
+	position: relative;
+	line-height: 0.6;
+	background-color: #7d869cab;
+}
+div#calendar-add a:active{
+	background-color: #7d869c;
+}
+div#calendar-add a:hover{
+	background-color: #7d869c;
+}
+
+/*
+	Meal Plan
+*/
+
+div#mealplan{
+	height: 18vh;
+	width: 95%;
+	margin: auto;
+	overflow-y: hidden;
+	overflow-x: auto;
+	white-space: nowrap;
+	padding-bottom: 60px;
+}
+div.plan{
+	background-color: #e3ac17cc;
+	font-size: 1.5em;
+}
+div.plan a.cooked{
+	border: none;
+	font-size: 01em;
+	font-weight: 700;
+	padding-top: 12px;
+}
+div.plan a.date{
+	width: 90%;
+	border-bottom: 2px solid black;
+	font-weight: 500;
+}
+
+div.popup{
+	position: fixed;
+	top: 7vh;
+	left: 50%;
+	margin-left: calc( -1*min(440px, 90vw)/2 );
+	width: calc(min(440px, 90vw));
+	height: 86vh;
+	display: none;
+}
+
+div#add-new-meal{
+	background-color: #ccdbdf;
+	text-align: center;
+	font-family: 'Roboto', sans-serif;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding-bottom: 0;
+	font-size: 0.4em;
+}
+
+div#add-new-meal h1{
+	font-size: 7em;
+	line-height: 0;
+	padding-bottom: 5vh;
+	margin-bottom: 0;
+	border-bottom: 2px solid black;
+	width: 90%;
+}
+div#add-new-meal h2{
+	font-family: 'Roboto', sans-serif;
+	font-size: 5em;
+	line-height: 0;
+	padding-left: 5px;
+	display: block;
+}
+div#add-new-meal input[type="date"]{
+	width: 87%;
+	padding: 5px;
+	font-size: 4em;
+}
+div#add-new-meal input[type="text"]{
+	width: 90%;
+	padding: 2px;
+	font-size: 5em;
+	margin: 3px;
+}
+div#add-new-meal input#meal-description{
+	font-size: 4em;
+	margin: 8px auto 0px auto;
+}
+#hide-keyboard{
+	width: 0px !important;
+	height: 0px;
+	padding: 0px !important;
+	margin: 0px !important;
+	font-size: 0px !important;
+	border: none;
+}
+div#add-new-meal select{
+	width: 90%;
+	padding: 5px;
+	font-size: 4em;
+	text-transform: capitalize;
+}
+
+div#add-new-meal div{
+	display: none;
+	margin-bottom: 8px;
+}
+
+div#ate-list{
+	width: 70%;
+	text-align: left;
+	text-transform: capitalize;
+	margin-top: 0;
+	padding-top: 58px;
+}
+
+input#submit-meal{
+	font-size: 4em;
+	background-color: #E5E8B6;
+	padding: 10px 15px;
+	font-weight: 700;
+	margin-bottom: 30px;
+	border: 1px solid #d1a42a;
+	border-radius: 1px;
+}
+
+div#personal-profile{
+	text-transform: capitalize;
+	background-color: #c6d4e6;
+	text-align: center;
+	font-family: 'Roboto', sans-serif;
+	overflow-y: hidden;
+	padding-bottom: 20px;
+	font-size: 1.3em;
+}
+div#personal-profile h1{
+	line-height: 0;
+	font-size: 3em;
+}
+div#pp-stats a{font-size: 1.6em;line-height: 1em;}
+div#pp-calendar{
+	height: 65vh;
+	width: calc(95%);
+	margin: auto;
+	overflow-y: hidden;
+	overflow-x: auto;
+	white-space: nowrap;
+	padding-bottom: 54px;
+	font-size: 1.8em;
+	line-height: 1em;
+}
+div#pp-calendar div.date{
+	width: 84%;
+	background-color: #5b88c7cc;
+	height: 65%;
+}
+div#pp-calendar a.mealdescription{
+	border-bottom: 2px solid black;
+	margin-bottom: 12px;
+}
+
+/* Removes the clear button from date inputs */
+input[type="date"]::-webkit-clear-button {
+	display: none;
+}
+
+/* Removes the spin button */
+input[type="date"]::-webkit-inner-spin-button {
+	display: none;
+}
+
+/* Always display the drop down caret */
+input[type="date"]::-webkit-calendar-picker-indicator {
+	color: #2c3e50;
+}
+
+/* A few custom styles for date inputs */
+input[type="date"] {
+	appearance: none;
+	-webkit-appearance: none;
+	color: #95a5a6;
+	font-family: "Helvetica", arial, sans-serif;
+	font-size: 18px;
+	border:1px solid #ecf0f1;
+	background:#ecf0f1;
+	padding:5px;
+	display: inline-block !important;
+	visibility: visible !important;
+}
+
+input[type="date"], focus {
+	color: #95a5a6;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+}
+/* Customize the label (the container) */
+.container {
+	display: block;
+	margin-bottom: 1px;
+	cursor: pointer;
+	font-size: 4em;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	width: 100%;
+	position: relative;
+	padding-left: 50%;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+	position: absolute;
+	top: 3px;
+	left: 25%;
+	height: 24px;
+	width: 24px;
+	background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:active input ~ .checkmark {
+	background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+	background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+	display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+	left: 7.5px;
+	top: 0.5px;
+	width: 7px;
+	height: 15px;
+	border: solid white;
+	border-width: 0 3.5px 3.5px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
