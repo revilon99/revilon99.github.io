@@ -34,7 +34,7 @@ class Boid{
         this.radius = 10;
         this.color = "black";
 
-        let vel = 0.1;
+        let vel = 0.05;
 
         this.velX = vel * (2*Math.random() - 1);
         this.velY = vel * (2*Math.random() - 1);
@@ -73,6 +73,10 @@ class Boid{
         //        underwater just out of audible range should allow for low data rate communication
         this.comms_list = [];
         this.last_comms = -1000; // Note - for render purposes only
+
+
+        // alternate corner aim
+        this.corner = Math.floor(Math.random()*4); // top left = 0; -> clockwise
     }
 
     tick(dt){
@@ -86,8 +90,8 @@ class Boid{
 
         // Apply forces to acceleration (Newton's Second Law)
         // Note - Mass and Drag should be added here when appropriate
-        this.accX = this.forceX;
-        this.accY = this.forceY;
+        this.accX = this.forceX - this.velX*this.velX*0.01*(this.velX/Math.abs(this.velX));
+        this.accY = this.forceY - this.velY*this.velY*0.01*(this.velY/Math.abs(this.velY));
         
 
         // Boundary conditions - may become irrelevant in later simulations
@@ -180,19 +184,6 @@ class Boid{
                 tri_acc_tracker.push(acc);
             }
         }
-        
-
-        // Force Control
-        // Assumption - Computer has direct control of acceleration - maybe correct in review
-        this.forceX = 0;
-        this.forceY = 0;
-
-        let acc = 0.0001;
-
-        if(this.computer.x > 800) this.forceX = -acc;
-        if(this.computer.x < 200) this.forceX = acc;
-        if(this.computer.y > 800) this.forceY = -acc;
-        if(this.computer.y < 200) this.forceY = acc;
 
         // Distance Pulse
         // Handle incoming pulses
@@ -242,6 +233,84 @@ class Boid{
                 this.other_boids[c.id].last_update = this.millis;
             }
         }
+
+        // Force Control
+        this.forceX = 0;
+        this.forceY = 0;
+
+        let acc = 0.0001;
+
+        // avoid boundary
+        if(this.computer.x > 800) this.forceX += -acc;
+        if(this.computer.x < 200) this.forceX += acc;
+        if(this.computer.y > 800) this.forceY += -acc;
+        if(this.computer.y < 200) this.forceY += acc;
+
+        // avoid other boids (seperation)
+        let c = 0;
+        let fx = 0;
+        let fy = 0;
+        for(let b of this.other_boids){
+            if(this.millis - b.last_update > 1000) continue;
+            let dx = this.computer.x - b.cx;
+            let dy = this.computer.y - b.cy;
+            let d = Math.sqrt(dx*dx + dy*dy);
+            if(d > 0 && d < 50){
+                fx += dx / (d);
+                fy += dy / (d);
+                if(d < 30){
+                    fx += 3*dx / (d);
+                    fy += 3*dy / (d);
+                }
+                c++;
+            }
+        }
+        if(c > 0){
+            fx /= c;
+            fy /= c;
+           this.forceX += fx*acc;
+           this.forceY += fy*acc;
+        }
+
+        let target_x = 0, target_y = 0;
+        switch(this.corner){
+            case 0:
+                target_x = 50;
+                target_y = 50;
+                if( this.computer.x < 200 && 
+                    this.computer.y < 200) this.corner = Math.floor(Math.random()*4);
+                break;
+            case 1:
+                target_x = 950;
+                target_y = 50;
+                if( this.computer.x > 800 && 
+                    this.computer.y < 200) this.corner = Math.floor(Math.random()*4);
+                break;
+            case 2:
+                target_x = 950;
+                target_y = 950;
+                if( this.computer.x > 800 && 
+                    this.computer.y > 800) this.corner = Math.floor(Math.random()*4);
+                break;
+            case 3:
+                target_x = 50;
+                target_y = 950;
+                if( this.computer.x < 200 && 
+                    this.computer.y > 800) this.corner = Math.floor(Math.random()*4);
+                break;
+            default:
+                target_x = 0;
+                target_y = 0;
+        }
+
+        let dx = target_x - this.computer.x;
+        let dy = target_y - this.computer.y;
+        let d = Math.sqrt(dx*dx + dy*dy);
+        this.forceX += 0.5*acc*dx / (d);
+        this.forceY += 0.5*acc*dy / (d);
+
+        if(this.id == 0) document.getElementById('b1-tar').innerHTML = this.corner;
+
 
         return {
             distance_pulse: pulse_distance

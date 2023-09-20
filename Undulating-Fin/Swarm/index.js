@@ -17,13 +17,13 @@ and act as a playground for its capability
 let canvas = document.getElementById('main');
 let ctx = canvas.getContext('2d');
 const C_SCALE = 1000;
-const DIST_PULSE_FREQ = 400; // Hz
+const DIST_PULSE_FREQ = 10; // Hz
 const PULSE_RANGE = 400*400;
 const COMMS_RANGE = 200*200;
 
 let width, height;
 
-let num_boids = 100;
+let num_boids = 40;
 let boids = [];
 
 let tri_acc_tracker = [];
