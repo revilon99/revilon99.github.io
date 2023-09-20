@@ -14,11 +14,6 @@ div#content{
     width: 100vw;
     min-height: 100%;
     margin: auto;
-    background-image : linear-gradient(to right, 
-                    rgba(255,255,255, 0), 
-                    rgba(73, 151, 215, 1) 15%,
-                    rgba(73, 151, 215, 1) 85%,
-                    rgba(255,255,255, 0));
 }
 
 div#contact{
@@ -30,7 +25,6 @@ div#contact{
 
 div#contact div.contact{
     display: inline-block;
-    float: left;
     width: 40%;
 }
 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Swarm - Undulating Fin - Oli Cass</title>
+        <style>
+            html, body{
+                padding: 0px;
+                margin: 0px;
+                overflow: hidden;
+                font-family: "Arial";
+            }
+
+            div#screen{
+                margin: 0px;
+                padding: 0px;
+                width: 70vw;
+                height: 100vh;
+                float: left;
+                background-color: rgb(228, 228, 228);
+            }
+            div#screen canvas{
+                width: 100%;
+                height: 100%;
+                margin: 0px;
+                padding: 0px;
+            }
+
+
+            div#control{
+                margin: 0px;
+                padding: 0px;
+                width: 30vw;
+                height: 100vh;
+                float: left;
+                background-color: rgb(136, 205, 219);
+                text-align: center;
+            }
+            div#control a{
+                display: block;
+                width: 100px;
+                font-family: "consolas";
+                float: right;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="screen">
+            <canvas id="main"></canvas>
+        </div>
+        <div id="control">
+            <h1>Swarm</h1>
+            boid[0] dr error : <a id="dr-err">0</a> <br><br>
+            boid[0] x : <a id="b1x">0</a> <br><br>
+            boid[0] y : <a id="b1y">0</a> <br><br>
+            boid[0] triangulation x : <a id="btx">0</a> <br><br>
+            boid[0] triangulation y : <a id="bty">0</a> <br><br>
+            triangulation accuracy : <a id="triacc">0</a> <br><br>
+            worst tri accuracy : <a id="triaccworst">0</a> <br><br>
+            <button onclick="render_state = 0">Show All Boids Line of sight</button>
+            <button onclick="render_state = 1">Show Boid 1 Line of sight</button>
+            <button onclick="render_state = 2">Show Swarm view of Boid 1</button>
+        </div>
+
+        <script src="Boid.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
