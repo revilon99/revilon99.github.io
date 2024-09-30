@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Random Number Generator - oli.casa</title>
+        <style>
+            body{
+                font-family: Arial;
+            }
+
+            h1{
+                text-align: center;
+                font-size: 6em;
+            }
+
+            div#timer{
+                height: 6px;
+                width: 100%;
+                background-color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <div>
+                Digits
+                <input type="number" value="6" id="digits"/>
+            </div>
+            <div>
+                Refresh (s)
+                <input type="number" value="30" id="refresh"/>
+            </div>
+        </div>
+
+        <h1 id="number"></h1>
+
+        <div id="timer"></div>
+
+        <script src="index.js"></script>
+    </body>
+</html>
