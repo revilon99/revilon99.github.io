@@ -1,41 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Oli Cass's Website</title>
-        <link rel="stylesheet" type="text/css" href="styles.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-167457066-1"></script>
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-		<script>
-		  window.dataLayer = window.dataLayer || [];
-		  function gtag(){dataLayer.push(arguments);}
-		  gtag('js', new Date());
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>oli.casa | Oliver Cass Portfolio</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>oli.casa</h1>
+      <p>Oliver Cass Portfolio</p>
+    </header>
 
-		  gtag('config', 'UA-167457066-1');
-		</script>
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
-    </head>
-    <body>
-        <div id="content">
-            <h1>oli.casa</h1>
-            <h3>Contact</h3>
-            <div id="contact">
-                <div class="contact">Email Me: <br> <a id="email" href="mailto:olicass99@gmail.com">olicass99@gmail.com</a></div>
-                <div style="float: right" class="contact">Check out the <a target="_blank" href="https://www.github.com/revilon99/revilon99.github.io">Github</a></div>
-            </div>
-            <h2>Projects</h2>
-            <div id="projects">
+    <section class="projects">
+      <div class="project">
+        <a href="./pong"><img src="./pong/logo.png" alt="Pong demo" /></a>
+        <h2><a href="./pong">Pong</a></h2>
+        <p>
+          A faithful browser-based version of the classic paddle-ball game with
+          smooth gameplay and collision logic.
+        </p>
+      </div>
+      <div class="project">
+        <a href="./boids"><img src="./boids/logo.png" alt="Boids demo" /></a>
+        <h2><a href="./boids">Boids</a></h2>
+        <p>
+          Flocking simulation where autonomous agents mimic bird-like group
+          behavior using simple rules.
+        </p>
+      </div>
+      <div class="project">
+        <a href="./verlet"
+          ><img src="./verlet/logo.png" alt="Verlet simulation"
+        /></a>
+        <h2><a href="./verlet">Verlet</a></h2>
+        <p>
+          A physics demo using Verlet integration to simulate particles and
+          constraints—ideal for soft-body dynamics.
+        </p>
+      </div>
+      <div class="project">
+        <a href="./boidsVR/ocean-demo.html">
+          <img src="./boidsVR/logo.png" alt="Boids VR" />
+        </a>
+        <h2><a href="./boidsVR/ocean-demo.html">Boids VR</a></h2>
+        <p>
+          Virtual Reality adaptation of Boids for an immersive 3D exploration of
+          flocking behavior.
+        </p>
+      </div>
+      <div class="project">
+        <a href="./ants"><img src="./ants/logo.png" alt="Ants simulation" /></a>
+        <h2><a href="./ants">Ants</a></h2>
+        <p>
+          Swarm simulation showcasing ant-like foraging and pheromone-based
+          pathfinding.
+        </p>
+      </div>
+      <div class="project">
+        <a href="./pong-music"
+          ><img src="./pong-music/logo.png" alt="Pong with music"
+        /></a>
+        <h2><a href="./pong-music">Pong w/ Music</a></h2>
+        <p>
+          Pong variation with reactive audio—each bounce triggers musical tones
+          for a rhythm-enhanced experience.
+        </p>
+      </div>
+    </section>
 
-            </div>
-            <script src="index.js"></script>
-            <script>
-                window.onload = function(){
-                    load_projects();
-                }
-            </script>
-    </body>
+    <section class="contact">
+      <p></p>Contact: <a href="mailto:olicass99@gmail.com">olicass99@gmail.com</a></p>
+      <p></p>Code on <a href="https://github.com/revilon99">GitHub</a></p>
+    </section>
+
+    <footer>
+      <p>
+        Oli Cass © 2025. All Rights Reserved. Hosted on
+        <a href="https://oli.casa/">oli.casa</a>
+      </p>
+    </footer>
+  </body>
 </html>
