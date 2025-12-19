@@ -1,0 +1,417 @@
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WebGPU Boids</title>
+  </head>
+  <body>
+    <canvas width="1024" height="1024"></canvas>
+    <script type="module">
+
+
+
+const canvas = document.querySelector("canvas");
+
+// Global Variables
+const NUM_BOIDS = 32*32;
+const WORKGROUP_SIZE = 64;
+const FPS = 30;
+const UPDATE_INTERVAL = Math.ceil(1000/FPS);
+
+// Boid Variables
+/*
+      NOTES:
+        - These variables should be a part of a uniform buffer, so that they can be changed during the simulation
+        - Some of these variables exist to account for the boidState data being stored in an unsigned int.
+*/
+
+
+// WebGPU device initialization
+if (!navigator.gpu) {
+  throw new Error("WebGPU not supported on this browser.");
+}
+
+const adapter = await navigator.gpu.requestAdapter();
+if (!adapter) {
+  throw new Error("No appropriate GPUAdapter found.");
+}
+
+const device = await adapter.requestDevice();
+
+// Canvas configuration
+const context = canvas.getContext("webgpu");
+const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
+context.configure({
+  device: device,
+  format: canvasFormat,
+});
+
+// Create a buffer with the vertices for a single boid.
+const vertices = new Float32Array([
+  //   X,    Y
+    -0.6, -0.8, // Triangle 1
+     0.6, -0.8,
+     0.0,  0.8,
+]);
+const vertexBuffer = device.createBuffer({
+  label: "Cell vertices",
+  size: vertices.byteLength,
+  usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+});
+
+device.queue.writeBuffer(vertexBuffer, 0, vertices);
+
+const vertexBufferLayout = {
+  arrayStride: 8,
+  attributes: [{
+    format: "float32x2",
+    offset: 0,
+    shaderLocation: 0, // Position. Matches @location(0) in the @vertex shader.
+  }],
+};
+
+// Create the bind group layout and pipeline layout.
+const bindGroupLayout = device.createBindGroupLayout({
+  label: "Boid Bind Group Layout",
+  entries: [{
+    binding: 0,
+    visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
+    buffer: { type: "read-only-storage"} // Cell state input buffer
+  }, {
+    binding: 1,
+    visibility: GPUShaderStage.COMPUTE,
+    buffer: { type: "storage"} // Cell state output buffer
+  }]
+});
+
+const pipelineLayout = device.createPipelineLayout({
+  label: "Boid Pipeline Layout",
+  bindGroupLayouts: [ bindGroupLayout ],
+});
+
+// Create the compute shader that will process the simulation.
+const simulationShaderModule = device.createShaderModule({
+  label: "Boids simulation shader",
+  code: `
+@group(0) @binding(0) var<storage> boidStateIn: array<u32>; // Boids Array
+@group(0) @binding(1) var<storage, read_write> boidStateOut: array<u32>; // Boids Array
+
+@compute
+@workgroup_size(${WORKGROUP_SIZE})
+  fn computeMain(@builtin(global_invocation_id) instance: vec3u) {
+      let i = 4*instance.x;
+
+      
+      let x  = f32(boidStateIn[i+0] - 1000)/5000 - 1;
+      let y  = f32(boidStateIn[i+1] - 1000)/5000 - 1;
+      let vx = f32(boidStateIn[4*i + 2])-4000;
+      let vy = f32(boidStateIn[4*i + 3])-4000;
+      let pos = vec2f(x, y);
+      let vel = vec2f(vx, vy);
+      var acc = vec2f(0, 0);
+      
+      let num_boids = arrayLength(&boidStateIn)/4;
+
+      var cohesion = array(u32(num_boids));
+      var alignment = array(u32(num_boids));
+      var separation = array(u32(num_boids));
+
+      var k_c = 0;
+      var k_a = 0;
+      var k_s = 0;
+
+      var dists = array(f32(num_boids));
+
+      for(var j = u32(0); j < num_boids; j++){
+        if(j == instance.x) { continue; }
+        let j_x = f32(boidStateIn[4*j+0] - 1000)/5000 - 1;
+        let j_y = f32(boidStateIn[4*j+1] - 1000)/5000 - 1;
+        let pos_j = vec2f(j_x, j_y);
+
+        let dist = length(pos_j - pos);
+        dists[j] = dist;
+        if(dist < 0.1) {
+          cohesion[k_c] = j;
+          k_c++;
+
+          if(dist < 0.08){
+            alignment[k_a] = j;
+            k_a++;
+
+            if(dist < 0.03){
+              separation[k_s] = j;
+              k_s++;
+            }
+          }
+        }
+      }
+
+      // cohesion
+      var center = vec2f();
+      for(var j = 0; j < k_c; j++){
+        let boid = cohesion[j];
+        let j_x = f32(boidStateIn[4*boid+0] - 1000)/5000 - 1;
+        let j_y = f32(boidStateIn[4*boid+1] - 1000)/5000 - 1;
+        let pos_j = vec2f(j_x, j_y);
+        center += pos_j;
+      }
+      center = center / f32(k_c);
+      acc += normalize(center - pos)/2;
+
+      // alignment
+      var dir = vec2f();
+      for(var j = 0; j < k_a; j++){
+        let boid = alignment[j];
+        let j_vx = f32(boidStateIn[4*boid + 2])-4000;
+        let j_vy = f32(boidStateIn[4*boid + 3])-4000;
+        let j_vel = vec2f(j_vx, j_vy);
+        dir += j_vel;
+      }
+      dir = dir / f32(k_a);
+      acc += normalize(dir)/10;
+
+      // separation
+      for(var j = 0; j < k_s; j++){
+        let boid = separation[j];
+        let j_x = f32(boidStateIn[4*boid+0] - 1000)/5000 - 1;
+        let j_y = f32(boidStateIn[4*boid+1] - 1000)/5000 - 1;
+        let pos_j = vec2f(j_x, j_y);
+
+        acc += normalize(pos - pos_j)/dists[boid];
+      }
+
+
+      if(x < -0.9) {
+        acc.x += 10;
+      }
+      if(x > 0.9) {
+        acc.x -= 10;
+      }
+      if(y < -0.9) {
+        acc.y += 10;
+      }
+      if(y > 0.9) {
+        acc.y -= 10;
+      }
+
+      acc = acc / length(acc);
+      
+      let max_acc = u32(100);
+      let fmax_acc = f32(max_acc);
+      var accX = u32(fmax_acc/2 * acc.x + fmax_acc); var accY = u32(fmax_acc/2 * acc.y + fmax_acc);
+
+      boidStateOut[i+2] = boidStateIn[i+2] + (accX-max_acc);
+      boidStateOut[i+3] = boidStateIn[i+3] + (accY-max_acc);
+
+      if(boidStateOut[i+2] < 3800){ boidStateOut[i+2] = 3800; }
+      if(boidStateOut[i+2] > 4200){ boidStateOut[i+2] = 4200; }
+      if(boidStateOut[i+3] < 3800){ boidStateOut[i+3] = 3800; }
+      if(boidStateOut[i+3] > 4200){ boidStateOut[i+3] = 4200; }
+
+      boidStateOut[i+0] = boidStateIn[i+0] + u32((boidStateOut[i+2])/10) - 400;
+      boidStateOut[i+1] = boidStateIn[i+1] + u32((boidStateOut[i+3])/10) - 400;
+
+      if(boidStateOut[i+0] < 1000){ boidStateOut[i+0] = 1000; }
+      if(boidStateOut[i+0] > 11000){ boidStateOut[i+0] = 11000; }
+      if(boidStateOut[i+1] < 1000){ boidStateOut[i+1] = 1000; }
+      if(boidStateOut[i+0] > 11000){ boidStateOut[i+3] = 11000; }
+  }  
+
+`
+});
+
+
+
+// Create the shader that will render the cells.
+const cellShaderModule = device.createShaderModule({
+label: "Cell shader",
+code: `
+struct VertexOutput {
+            @builtin(position) position: vec4f,
+            @location(0) boidIndex: vec2f,
+          };
+
+@group(0) @binding(0) var<storage> boidState: array<u32>; // Boids Array
+
+@vertex
+  fn vertexMain(@location(0) position: vec2f, @builtin(instance_index) instance: u32)
+    -> VertexOutput {
+      let i = instance;
+
+      let x  = f32(boidState[4*i + 0] - 1000)/5000 - 1;
+      let y  = f32(boidState[4*i + 1] - 1000)/5000 - 1;
+      let vx = f32(boidState[4*i + 2])-4000;
+      let vy = f32(boidState[4*i + 3])-4000;
+
+      let v = vx*vx + vy*vy;
+
+      //let vx = 4.0; let vy = 3.0;
+
+
+      let scale = vec2f(80, 80);
+      let offset = vec2f(x, y);
+
+      let theta = atan2(-vx, vy);
+
+      let cos_t = cos(theta);
+      let sin_t = sin(theta);
+
+      let pos_x = position.x*cos_t - position.y*sin_t;
+      let pos_y = position.x*sin_t + position.y*cos_t;
+
+      let pos = vec2f(pos_x, pos_y);
+
+      var output: VertexOutput;
+      output.position = vec4f(offset + pos/scale, 0, 1);
+      output.boidIndex.x = f32(i)/(2*${NUM_BOIDS})+0.8;
+      output.boidIndex.y = (sin_t+1)/2 + 0.2;
+      return output;
+    }
+
+  @fragment
+    fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
+      var color = input.boidIndex.x;
+      var r = input.boidIndex.y * color;
+      var g = input.boidIndex.y * color;
+      var b = input.boidIndex.y * color;
+      return vec4f(r, g, b, 1);
+    }
+
+
+`
+});
+
+// Create a pipeline that renders the cell.
+const cellPipeline = device.createRenderPipeline({
+    label: "Cell pipeline",
+    layout: pipelineLayout,
+    vertex: {
+      module: cellShaderModule,
+      entryPoint: "vertexMain",
+      buffers: [vertexBufferLayout]
+    },
+    fragment: {
+      module: cellShaderModule,
+      entryPoint: "fragmentMain",
+      targets: [{
+        format: canvasFormat
+      }]
+    }
+  });
+
+
+// Create a compute pipeline that updates the game state.
+const simulationPipeline = device.createComputePipeline({
+    label: "Simulation pipeline",
+    layout: pipelineLayout,
+    compute: {
+      module: simulationShaderModule,
+      entryPoint: "computeMain",
+    }
+  });
+
+// Create an array representing the active state of each boid
+/*
+i:   x
+i+1: y
+i+2: vel_x
+i+3: vel_y
+*/
+const boidsArray = new Uint32Array(NUM_BOIDS*4);
+
+// Create a storage buffer to hold the cell state.
+const boidsStorage = [
+  device.createBuffer({
+    label: "Cell State A",
+    size: boidsArray.byteLength,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  }),
+  device.createBuffer({
+    label: "Cell State B",
+    size: boidsArray.byteLength,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  })
+];
+
+// Mark every third cell of the grid as active.
+for (let i = 0; i < boidsArray.length; i += 4) {
+  boidsArray[i]   = Math.floor(Math.random()*10000) + 1000;    // x
+  boidsArray[i+1] = Math.floor(Math.random()*10000) + 1000;  // y
+  boidsArray[i+2] = Math.floor(Math.random()*400) + 3800;  // vel x
+  boidsArray[i+3] = Math.floor(Math.random()*400) + 3800;  // vel y
+}
+device.queue.writeBuffer(boidsStorage[0], 0, boidsArray);
+
+const bindGroups = [
+  device.createBindGroup({
+    label: "Cell renderer bind group A",
+    layout: bindGroupLayout,
+    entries: [{
+      binding: 0,
+      resource: { buffer: boidsStorage[0] }
+    }, {
+      binding: 1,
+      resource: { buffer: boidsStorage[1] }
+    }],
+  }),
+  device.createBindGroup({
+    label: "Cell renderer bind group B",
+    layout: bindGroupLayout,
+    entries: [{
+      binding: 0,
+      resource: { buffer: boidsStorage[1] }
+    }, {
+      binding: 1,
+      resource: { buffer: boidsStorage[0] }
+    }],
+  }),
+];
+
+
+let step = 0;
+function update(){
+  requestAnimationFrame(update);
+  // Clear the canvas with a render pass
+  const encoder = device.createCommandEncoder();
+
+  // Start a compute pass
+  const computePass = encoder.beginComputePass();
+
+  computePass.setPipeline(simulationPipeline);
+  computePass.setBindGroup(0, bindGroups[step % 2]);
+  
+  const workgroupCount = Math.ceil(NUM_BOIDS / WORKGROUP_SIZE);
+  computePass.dispatchWorkgroups(workgroupCount);
+  computePass.end();
+
+  step++; // Increment the step count
+
+  
+
+  // Start a render pass
+  const pass = encoder.beginRenderPass({
+    colorAttachments: [{
+      view: context.getCurrentTexture().createView(),
+      loadOp: "clear",
+      clearValue: { r: 0, g: 0, b: 0.0, a: 1.0 },
+      storeOp: "store",
+    }]
+  });
+
+  // Draw the grid.
+  pass.setPipeline(cellPipeline);
+  pass.setBindGroup(0, bindGroups[step % 2]);
+  pass.setVertexBuffer(0, vertexBuffer);
+  pass.draw(vertices.length / 2, NUM_BOIDS);
+
+  // End the render pass and submit the command buffer
+  pass.end();
+  device.queue.submit([encoder.finish()]);
+
+}
+
+requestAnimationFrame(update);
+    </script>
+  </body>
+</html>
