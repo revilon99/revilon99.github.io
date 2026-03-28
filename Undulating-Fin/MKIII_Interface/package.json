@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "Control interface for undulating fin MKIII",
 	"dependencies": {
-		"express": "^4.18.1",
+		"express": "^4.19.2",
 		"serialport": "^10.4.0",
 		"socket.io": "^4.5.1"
 	}
