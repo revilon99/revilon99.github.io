@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <radialGradient id="globeGrad" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </radialGradient>
+    <linearGradient id="needleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffd166"/>
+      <stop offset="100%" stop-color="#f4a340"/>
+    </linearGradient>
+    <clipPath id="globeClip">
+      <circle cx="32" cy="32" r="28"/>
+    </clipPath>
+  </defs>
+
+  <!-- globe (the "o" in "oli") -->
+  <circle cx="32" cy="32" r="28" fill="url(#globeGrad)"/>
+  <g clip-path="url(#globeClip)" stroke="#ffffff" stroke-opacity="0.35" fill="none" stroke-width="1.2">
+    <ellipse cx="32" cy="32" rx="12" ry="28"/>
+    <ellipse cx="32" cy="32" rx="22" ry="28"/>
+    <line x1="4" y1="32" x2="60" y2="32"/>
+    <line x1="8" y1="18" x2="56" y2="18"/>
+    <line x1="8" y1="46" x2="56" y2="46"/>
+  </g>
+
+  <!-- compass rose, the historical map-reading instrument -->
+  <g>
+    <path d="M32 7 L37 32 L27 32 Z" fill="url(#needleGrad)"/>
+    <path d="M32 7 L37 32 L27 32 Z" fill="url(#needleGrad)" transform="rotate(90 32 32)"/>
+    <path d="M32 7 L37 32 L27 32 Z" fill="url(#needleGrad)" transform="rotate(180 32 32)"/>
+    <path d="M32 7 L37 32 L27 32 Z" fill="url(#needleGrad)" transform="rotate(270 32 32)"/>
+
+    <path d="M32 16 L34.5 32 L29.5 32 Z" fill="#ffffff" fill-opacity="0.8" transform="rotate(45 32 32)"/>
+    <path d="M32 16 L34.5 32 L29.5 32 Z" fill="#ffffff" fill-opacity="0.8" transform="rotate(135 32 32)"/>
+    <path d="M32 16 L34.5 32 L29.5 32 Z" fill="#ffffff" fill-opacity="0.8" transform="rotate(225 32 32)"/>
+    <path d="M32 16 L34.5 32 L29.5 32 Z" fill="#ffffff" fill-opacity="0.8" transform="rotate(315 32 32)"/>
+
+    <circle cx="32" cy="32" r="3" fill="#ffffff" stroke="#f4a340" stroke-width="1"/>
+  </g>
+
+  <!-- brass bezel -->
+  <circle cx="32" cy="32" r="29" fill="none" stroke="url(#needleGrad)" stroke-width="1.5" stroke-opacity="0.9"/>
+</svg>
